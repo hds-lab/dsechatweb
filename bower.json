@@ -1,0 +1,11 @@
+{
+  "name": "chatdatauwedu",
+  "author": "Michael Brooks <mjbrooks@uw.edu>",
+  "version": "0.0.0",
+  "dependencies": {
+    "jquery": "~1.9.0",
+    "modernizr": "~2.8.3",
+    "backbone": "~1.1.2",
+    "underscore": "~1.7.0"
+  }
+}

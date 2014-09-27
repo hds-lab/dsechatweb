@@ -1,0 +1,66 @@
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+                class="sr-only">Close</span></button>
+            <h4 class="modal-title">Invitation to Participate in Research</h4>
+        </div>
+        <div class="modal-body">
+
+            <p>
+                We are currently running a study at the University of Washington to find out how people use the data
+                science chat room. You can still use the chat room without being in the study. If you don’t want to
+                participate, just uncheck the box below. Please contact us if you have questions.
+            </p>
+
+            <p>
+                In the chat room, you can have conversations with others who are present in the online chat room.
+                Your messages in the chat room are stored on our server. If you agree to be in the study, we may
+                analyze this data to learn about how the chat room supported your data science work.
+            </p>
+
+            <p>
+                Note that messages you post in the chat room are visible to others, and will be stored on our
+                server, regardless of whether you agree to be in the study. Please don’t post anything you wouldn’t
+                want your colleagues to read. Data will be linked to your chat room username. You may contact us if
+                you want to have your data removed.
+            </p>
+
+            <p>
+                Your data will only be used for this study; data in research publications will be anonymized or
+                aggregated with other users’ data. Government or university staff sometimes review studies such as
+                this one to make sure they are being done safely and legally. If a review of this study takes place,
+                your records may be examined. The reviewers will protect your privacy. The study records will not be
+                used to put you at legal risk or harm.
+            </p>
+
+            <p>
+                There are no direct benefits to you for being in the study; risks include breach of confidentiality.
+                This study will help us understand how collaborative and community-based technologies can support an
+                emerging data science community.
+
+            <p>
+
+            <p>
+                Participation is voluntary. If you do not wish to be in the study, uncheck the box below before
+                entering the data science chat room. If you agree now but change your mind later, please contact us.
+                For questions about your rights as a participant, contact the UW Human Subjects Division at (206)
+                543-0098.
+            </p>
+
+            <p class="checkbox">
+                <label>
+                    <input type="checkbox" id="over18checkbox" <%= over18 ? 'checked' : '' %>/>
+                    I am at least 18 years old
+                </label>
+            </p>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default disagree-button">No Thanks</button>
+            <button type="button" class="btn btn-primary agree-button">I agree to participate</button>
+        </div>
+    </div>
+    <!-- /.modal-content -->
+</div>
+<!-- /.modal-dialog -->

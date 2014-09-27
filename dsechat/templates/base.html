@@ -1,0 +1,75 @@
+{% load compress static %}
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Data Science Chat{% endblock %}</title>
+    <meta name="description" content="A chat room for data scientists">
+    <meta name="viewport" content="width=device-width">
+    <link rel="shortcut icon" href="{% static 'favicon.ico' %}">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+    {% compress css %}
+        <!-- Vendor css -->
+        <link rel="stylesheet" type="text/less" href="{% static 'twitter_bootstrap/less/bootstrap.less' %}"/>
+    {% endcompress %}
+
+    {% compress css %}
+        <!-- Site CSS -->
+{#        <link rel="stylesheet" href="styles/main.css">#}
+{#        <link rel="stylesheet" href="styles/chat.css">#}
+{#        <link rel="stylesheet" href="styles/setup.css">#}
+    {% endcompress %}
+
+    {% compress js %}
+        <!-- Modernizr JS -->
+        <script src="{% static 'vendor/bower/modernizr/modernizr.js' %}"></script>
+    {% endcompress %}
+
+</head>
+<body>
+
+<!--[if lt IE 10]>
+<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
+    your browser</a> to improve your experience.</p>
+<![endif]-->
+
+<div class="container">
+    <div class="header">
+        <ul class="nav nav-pills pull-right"></ul>
+        <h3 class="text-muted"><a href="/">Data Science Chat</a></h3>
+    </div>
+
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+
+    <div class="footer">
+        <p>&copy; University of Washington 2014</p>
+    </div>
+
+</div>
+
+{% compress js %}
+    <!-- Vendor JS -->
+    <script src="{% static 'vendor/bower/jquery/jquery.js' %}"></script>
+    <script src="{% static 'vendor/bower/underscore/underscore.js' %}"></script>
+    <script src="{% static 'vendor/bower/backbone/backbone.js' %}"></script>
+    {#<script src="bower_components/lodash/dist/lodash.compat.js"></script>#}
+
+    <script src="{% static 'twitter_bootstrap/js/transition.js' %}"></script>
+    <script src="{% static 'twitter_bootstrap/js/affix.js' %}"></script>
+    <script src="{% static 'twitter_bootstrap/js/alert.js' %}"></script>
+    <script src="{% static 'twitter_bootstrap/js/dropdown.js' %}"></script>
+    <script src="{% static 'twitter_bootstrap/js/tooltip.js' %}"></script>
+    <script src="{% static 'twitter_bootstrap/js/modal.js' %}"></script>
+    <script src="{% static 'twitter_bootstrap/js/transition.js' %}"></script>
+    <script src="{% static 'twitter_bootstrap/js/button.js' %}"></script>
+    <script src="{% static 'twitter_bootstrap/js/popover.js' %}"></script>
+    <script src="{% static 'twitter_bootstrap/js/carousel.js' %}"></script>
+    <script src="{% static 'twitter_bootstrap/js/scrollspy.js' %}"></script>
+    <script src="{% static 'twitter_bootstrap/js/collapse.js' %}"></script>
+    <script src="{% static 'twitter_bootstrap/js/tab.js' %}"></script>
+{% endcompress %}
+</body>
+</html>
