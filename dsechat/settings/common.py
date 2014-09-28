@@ -129,8 +129,6 @@ COMPRESS_PRECOMPILERS = (
     ('text/less', (SITE_DIR / 'node_modules/.bin/lessc') + ' {infile} {outfile}'),
 )
 
-print COMPRESS_PRECOMPILERS
-
 ##################################################################
 # Templates settings
 ##################################################################
@@ -150,6 +148,7 @@ TEMPLATE_LOADERS = (
 # RequestContext.
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
+    'django.contrib.messages.context_processors.messages',
     'django.contrib.auth.context_processors.auth'
 )
 
@@ -213,16 +212,20 @@ EXTERNAL_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 
     # Other external apps
     'compressor',
-    'twitter_bootstrap'
+    'lineage',
+    'registration',
+    'bootstrap3',
 )
 
 INTERNAL_APPS = (
     # Application specific apps
     # 'dsechat.libs.openfire',
     'dsechat.apps.web',
+    'dsechat.apps.accounts',
 )
 
 # OPENFIRE_SETTINGS = {
@@ -230,3 +233,13 @@ INTERNAL_APPS = (
 #     'SECRET': environ.get('OPENFIRE_SECRET', 'bigsecret'),
 #     'DEFAULT_GROUPS': (environ.get('OPENFIRE_GROUPNAME'),)
 # }
+
+##################################################################
+# Registration settings
+##################################################################
+
+# Log the user in immediately after registration
+REGISTRATION_AUTO_LOGIN = True
+
+# Is new user registration permitted?
+REGISTRATION_OPEN = True

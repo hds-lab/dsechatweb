@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, include, url
-from views import HomeView, SetupView
+from views import HomeView, SetupView, ChatView
 
 urlpatterns = patterns('',
                        # Examples:
@@ -8,4 +8,5 @@ urlpatterns = patterns('',
 
                        url(r'^$', HomeView.as_view(), name="home"),
                        url(r'^setup', SetupView.as_view(), name="setup"),
+                       url(r'^chat', ChatView.as_view(), name="chat"),
 )

@@ -9,4 +9,8 @@ class HomeView(TemplateView):
 class SetupView(TemplateView):
     template_name = "web/setup.html"
 
+class RegisterView(TemplateView):
+    template_name = "web/signup.html"
 
+class ChatView(TemplateView):
+    template_name = "web/chat.html"

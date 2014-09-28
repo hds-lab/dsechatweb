@@ -1,0 +1,32 @@
+
+.focus-form-wrapper .form-control {
+    border-radius: 2px;
+}
+
+.focus-form-wrapper .form-left-col {
+    padding-right: 5px;
+}
+
+.focus-form-wrapper .form-right-col {
+    padding-left: 5px;
+}
+
+.focus-form-wrapper .page-header {
+    border-bottom: none;
+}
+
+@media (min-width: 768px) {
+    .focus-form-wrapper {
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .focus-form-wrapper .page-header {
+        text-align: center;
+    }
+
+    .focus-form-wrapper .lead {
+        text-align: center;
+    }
+}

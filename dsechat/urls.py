@@ -8,4 +8,6 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
 
     url(r'^', include('dsechat.apps.web.urls', namespace='web')),
+    url(r'^accounts/', include('dsechat.apps.accounts.urls', namespace='accounts')),
+
 )

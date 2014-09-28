@@ -1,0 +1,7 @@
+{% if errors %}
+    <span class="help-block">
+{% for err in errors %}
+    {{ err }}
+{% endfor %}
+    </span>
+{% endif %}

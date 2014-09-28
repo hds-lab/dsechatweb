@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h1 class="page-header">Welcome, {{ object.first_name }}!</h1>
+
+
+    Username: {{ object.username }}
+    Password: ***** [<a href="{% url 'accounts:password_change' %}">Change</a>]
+    First Name: {{ object.first_name }}
+    Last Name: {{ object.last_name }}
+    Email: {{ object.email }}
+
+
+{% endblock %}

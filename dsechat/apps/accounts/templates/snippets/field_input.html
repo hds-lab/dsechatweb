@@ -1,0 +1,10 @@
+<div {% if field.errors %}class="has-error"{% endif %}>
+<input class="form-control input-lg"
+       type="{{ type|default:'text' }}"
+       id="{{ field.id_for_label }}"
+       name="{{ field.html_name }}"
+       placeholder="{{ field.label }}"
+       {% if field.value %}value="{{ field.value }}"{% endif %}
+    />
+{% include 'snippets/field_errors.html' with errors=field.errors %}
+</div>
