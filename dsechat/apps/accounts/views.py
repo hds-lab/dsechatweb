@@ -68,15 +68,20 @@ class UserProfileUpdateView(generic.UpdateView):
     def dispatch(self, *args, **kwargs):
         return super(UserProfileUpdateView, self).dispatch(*args, **kwargs)
 
+    def form_valid(self, form):
+        result = super(UserProfileUpdateView, self).form_valid(form)
+        messages.success(self.request, "Your profile has been updated.")
+        return result
+
 
 class PasswordChangeView(auth_cbv.PasswordChangeView):
     success_url = reverse_lazy('accounts:profile')
 
     def form_valid(self, form):
-        form.save()
+        result = super(PasswordChangeView, self).form_valid(form)
         update_session_auth_hash(self.request, form.user)
         messages.success(self.request, "Your password has been changed.")
-        return super(PasswordChangeView, self).form_valid(form)
+        return result
 
 
 class LogoutView(auth_cbv.LogoutView):

@@ -16,7 +16,7 @@
 
     {% compress css %}
         <!-- Site CSS -->
-        <link rel="stylesheet" href="{% static 'css/fixed_navbar.css' %}"/>
+        <link rel="stylesheet" href="{% static 'css/sticky_footer_fixed_navbar.css' %}"/>
         <link rel="stylesheet" href="{% static 'css/registration_form.css' %}"/>
         <link rel="stylesheet" href="{% static 'css/user_profile.css' %}"/>
         {#        <link rel="stylesheet" href="styles/main.css">#}
@@ -54,20 +54,22 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li class="{% ancestor 'web:home' %}"><a href="{% url 'web:home' %}">Home</a></li>
                     <li class="{% ancestor 'web:chat' %}"><a href="{% url 'web:chat' %}">Web Chat</a></li>
                     <li class="{% ancestor 'web:setup' %}"><a href="{% url 'web:setup' %}">Setup</a></li>
                 </ul>
 
-                <ul class="nav navbar-nav pull-right">
+                <ul class="nav navbar-nav navbar-right">
                     {% if user.is_authenticated %}
+                        <li class="{% ancestor 'accounts:profile' %}">
+                            <a href="{% url 'accounts:profile' %}" title="View my profile">Hello, {{ user.first_name }}</a>
+                        </li>
                         <li><a href="{% url 'accounts:logout' %}">Sign out</a></li>
-                        </ul>
-                        <p class="navbar-text pull-right">Hello, {{ user.first_name }}</p>
                     {% else %}
-                        <li><a href="{% url 'accounts:login' %}">Sign in</a></li>
-                        </ul>
+                        <li class="{% ancestor 'accounts:login' %}">
+                            <a href="{% url 'accounts:login' %}">Sign in</a>
+                        </li>
                     {% endif %}
+                </ul>
             </div>
             <!--/.nav-collapse -->
         </div>
@@ -80,10 +82,12 @@
         {% block content %}{% endblock %}
     </div>
 
-    <div class="footer">
-        <p>&copy; University of Washington 2014</p>
-    </div>
+</div>
 
+<div class="footer">
+    <div class="container">
+        <p class="text-muted">&copy; University of Washington 2014</p>
+    </div>
 </div>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>

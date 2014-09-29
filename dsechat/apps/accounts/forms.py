@@ -75,3 +75,11 @@ class UserProfileUpdateForm(forms.ModelForm):
 
     first_name = forms.CharField(label=_("First Name"))
     last_name = forms.CharField(label=_("Last Name"))
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        # You cannot change your email to another user's email
+        if email and UserModel().objects.filter(email__iexact=email).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError(_('A user with that email address already exists.'))
+        else:
+            return email
