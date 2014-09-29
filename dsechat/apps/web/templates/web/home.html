@@ -1,42 +1,77 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="jumbotron">
-    <h1>Connect with<br/>Data Scientists</h1>
+    <div class="jumbotron">
+        <h1>Chat with Data Scientists</h1>
 
-    <p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus
-        commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+        <p class="lead">
+            An online community for data scientists across NYU, Berkeley, and UW.
+        </p>
 
-    <p>
-        <a class="btn btn-lg btn-success register-button" href="{% url 'accounts:registration_register' %}" role="button">Create an account</a>
-        <a class="btn btn-lg btn-primary chat-button" href="#chat" role="button">Launch web client</a>
-    </p>
-
-    <p><a href="{% url 'web:setup' %}">Connect your chat client</a></p>
-</div>
-
-<div class="row marketing">
-    <div class="col-lg-6">
-        <h4>Subheading</h4>
-
-        <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
-
-        <h4>Subheading</h4>
-
-        <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet
-            fermentum.</p>
-
+        <p>
+            <a class="btn btn-lg btn-success"
+               href="{% url 'accounts:registration_register' %}"
+               role="button">Create an account</a>
+        </p>
     </div>
 
-    <div class="col-lg-6">
-        <h4>Subheading</h4>
+    <div class="row marketing">
+        <div class="col-lg-6">
+            <h4>Connect and Communicate</h4>
 
-        <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
+            <p>
+                The data science chat room is intended to be a social space where data scientists across
+                NYU, Berkeley, and UW can gather.
+            </p>
 
-        <h4>Subheading</h4>
+            <ul>
+                <li>Ask questions and share advice about data science.</li>
+                <li>Get to know other data scientists.</li>
+                <li>Socialize and build a data science community.</li>
+            </ul>
 
-        <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet
-            fermentum.</p>
+            <h4>It's Science!</h4>
 
+            <p>
+                Group chat rooms are a great way for a geographically dispersed
+                group of people to stay in touch. Since chat is less formal than email,
+                it can be fun and social. At the same time, you can use the chat room to ask
+                questions and find people who can help you solve work problems.
+            </p>
+
+            <p><a href="{% url 'web:research' %}">Read more about why chat is great for online collaboration</a>.</p>
+
+        </div>
+
+        <div class="col-lg-6">
+            <h4>Get started</h4>
+
+            <p>
+                Once you <a href="{% url 'accounts:registration_register' %}">create an account</a>,
+                you can get started quickly using the <a href="{% url 'web:chat' %}">web-based client</a>, right in your
+                browser. You can also <a href="{% url 'web:setup' %}">connect to the chat room</a> using any chat client
+                that supports XMPP.
+            </p>
+
+            <h4>About us</h4>
+
+            <p>
+                The data science chat room is based at the University of Washington.
+                It is operated by Professor Cecilia Aragon, Michael Brooks, and Brittany Fiore-Silfvast.
+            </p>
+
+            <p>
+                This project is part of a cross-campus collaborative data science effort
+                supported by the Gordon and Betty Moore Foundation and the Alfred P. Sloan Foundation.
+                <a href="http://escience.washington.edu/blog/introducing-data-science-environment"
+                   target="_blank">Read more about this initiative.</a>
+            </p>
+
+            <p>
+                For questions about the data science chat room, contact <a
+                href="mailto:{{ contact_email }}">{{ contact_email }}</a>.
+                Learn more about <a href="http://data.uw.edu/" target="_blank">Data Science at UW</a>.
+            </p>
+
+        </div>
     </div>
-</div>
 {% endblock %}

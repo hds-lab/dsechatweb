@@ -41,3 +41,6 @@ COMPRESS_ENABLED = True
 
 # The hosts that we are allowed to serve as
 ALLOWED_HOSTS = environ.get("ALLOWED_HOSTS", 'localhost').split(',')
+
+
+SITE_CONTACT_EMAIL = environ.get("SITE_CONTACT_EMAIL", 'info@example.com')

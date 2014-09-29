@@ -9,20 +9,26 @@
     <link rel="shortcut icon" href="{% static 'favicon.ico' %}">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
-    {% compress css %}
-        <!-- Vendor css -->
-        <link rel="stylesheet" href="{% static 'vendor/bower/bootstrap/dist/css/bootstrap.css' %}"/>
-    {% endcompress %}
+    {% block page_css %}
+        {% compress css %}
+            <!-- Vendor css -->
+            <link rel="stylesheet" href="{% static 'vendor/bower/bootstrap/dist/css/bootstrap.css' %}"/>
+        {% endcompress %}
 
-    {% compress css %}
-        <!-- Site CSS -->
-        <link rel="stylesheet" href="{% static 'css/sticky_footer_fixed_navbar.css' %}"/>
-        <link rel="stylesheet" href="{% static 'css/registration_form.css' %}"/>
-        <link rel="stylesheet" href="{% static 'css/user_profile.css' %}"/>
-        {#        <link rel="stylesheet" href="styles/main.css">#}
-        {#        <link rel="stylesheet" href="styles/chat.css">#}
-        {#        <link rel="stylesheet" href="styles/setup.css">#}
-    {% endcompress %}
+        {% compress css %}
+            <!-- Site CSS -->
+            <link rel="stylesheet" href="{% static 'css/sticky_footer_fixed_navbar.css' %}"/>
+            <link rel="stylesheet" href="{% static 'css/registration_form.css' %}"/>
+            <link rel="stylesheet" href="{% static 'css/user_profile.css' %}"/>
+            <link rel="stylesheet" href="{% static 'css/home_page.css' %}"/>
+            <link rel="stylesheet" href="{% static 'css/research_page.css' %}"/>
+            <link rel="stylesheet" href="{% static 'css/setup_page.css' %}"/>
+            {#        <link rel="stylesheet" href="styles/main.css">#}
+            {#        <link rel="stylesheet" href="styles/chat.css">#}
+            {#        <link rel="stylesheet" href="styles/setup.css">#}
+        {% endcompress %}
+
+    {% endblock %}
 
     {% compress js %}
         <!-- Modernizr JS -->
@@ -61,7 +67,8 @@
                 <ul class="nav navbar-nav navbar-right">
                     {% if user.is_authenticated %}
                         <li class="{% ancestor 'accounts:profile' %}">
-                            <a href="{% url 'accounts:profile' %}" title="View my profile">Hello, {{ user.first_name }}</a>
+                            <a href="{% url 'accounts:profile' %}"
+                               title="View my profile">Hello, {{ user.first_name }}</a>
                         </li>
                         <li><a href="{% url 'accounts:logout' %}">Sign out</a></li>
                     {% else %}
@@ -90,15 +97,16 @@
     </div>
 </div>
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+{% block page_js %}
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
-{% compress js %}
-    <!-- Vendor JS -->
-    <script src="{% static 'vendor/bower/underscore/underscore.js' %}"></script>
-    <script src="{% static 'vendor/bower/backbone/backbone.js' %}"></script>
-    <script src="{% static 'vendor/bower/bootstrap/dist/js/bootstrap.js' %}"></script>
-{% endcompress %}
-
+    {% compress js %}
+        <!-- Vendor JS -->
+        <script src="{% static 'vendor/bower/underscore/underscore.js' %}"></script>
+        <script src="{% static 'vendor/bower/backbone/backbone.js' %}"></script>
+        <script src="{% static 'vendor/bower/bootstrap/dist/js/bootstrap.js' %}"></script>
+    {% endcompress %}
+{% endblock %}
 
 </body>
 </html>

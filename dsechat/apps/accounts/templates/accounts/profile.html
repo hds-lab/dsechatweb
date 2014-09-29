@@ -2,10 +2,21 @@
 {% load bootstrap3 %}
 {% block content %}
 
-    <div class="focus-form-wrapper user-profile">
+    <div class="user-profile">
         <h1 class="page-header">Welcome, {{ object.first_name }}!</h1>
 
+        <p class="quick-buttons">
+            <a class="btn btn-primary"
+               href="{% url 'web:chat' %}"
+               role="button">Chat in your browser</a>
+
+            <a class="btn btn-default"
+               href="{% url 'web:setup' %}"
+               role="button">Set up a desktop client</a>
+        </p>
+
         <div class="panel panel-default">
+            <div class="panel-heading"><h4>Your Profile</h4></div>
             <div class="panel-body">
                 <div class="row">
                     <label class="col-sm-2">Username:</label>
@@ -35,7 +46,7 @@
 
                 <div class="row">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <a href="{% url 'accounts:profile_update' %}" class="btn btn-primary">Edit Profile</a>
+                        <a href="{% url 'accounts:profile_update' %}" class="btn btn-default">Edit Profile</a>
                     </div>
                 </div>
             </div>

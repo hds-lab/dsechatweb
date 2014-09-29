@@ -1,5 +1,43 @@
 {% extends 'base.html' %}
+{% load compress staticfiles %}
+{% block page_css %}
+    {{ block.super }}
+
+    {% compress css %}
+        <!-- Candy CSS -->
+        <link rel="stylesheet" type="text/css" href="{% static 'vendor/bower/candy/res/default.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'vendor/bower/candy-plugins/inline-images/candy.css' %}"/>
+        <link rel="stylesheet" type="text/css" href="{% static 'vendor/bower/candy-plugins/replies/candy.css' %}"/>
+        <link rel="stylesheet" type="text/css" href="{% static 'vendor/bower/candy-plugins/timeago/candy.css' %}"/>
+        <link rel="stylesheet" type="text/css" href="{% static 'vendor/bower/candy-plugins/typingnotifications/typingnotifications.css' %}"/>
+        <link rel="stylesheet" type="text/css" href="{% static 'css/webchat.css' %}"/>
+    {% endcompress %}
+{% endblock %}
+
+{% block page_js %}
+    {{ block.super }}
+
+    {% compress js %}
+        <!-- Candy JS -->
+        <script type="text/javascript" src="{% static 'vendor/bower/candy/libs/libs.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'vendor/bower/candy/candy.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'vendor/bower/candy-plugins/inline-images/candy.js' %}"></script>
+        <script type="text/javascript" src="{% static 'vendor/bower/candy-plugins/notifications/candy.js' %}"></script>
+        <script type="text/javascript" src="{% static 'vendor/bower/candy-plugins/replies/candy.js' %}"></script>
+        <script type="text/javascript" src="{% static 'vendor/bower/candy-plugins/timeago/candy.js' %}"></script>
+        <script type="text/javascript" src="{% static 'vendor/bower/candy-plugins/typingnotifications/typingnotifications.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/webchat.js' %}"></script>
+    {% endcompress %}
+
+    <script type="text/javascript">
+        window.webchat = {
+            assets: '{% static "vendor/bower/candy/res/" %}'
+        };
+    </script>
+{% endblock %}
 
 {% block content %}
-Chat window goes here
+    <div class="webchat-wrapper">
+        <div id="candy"></div>
+    </div>
 {% endblock %}
