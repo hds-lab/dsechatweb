@@ -43,6 +43,13 @@ class UserRegistrationForm(forms.Form):
         else:
             return self.cleaned_data['username']
 
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if email and UserModel().objects.filter(email__iexact=email).exists():
+            raise forms.ValidationError(_('A user with that email address already exists.'))
+        else:
+            return email
+
     def clean(self):
         """
         Verifiy that the values entered into the two password fields
@@ -55,3 +62,16 @@ class UserRegistrationForm(forms.Form):
             if self.cleaned_data['password1'] != self.cleaned_data['password2']:
                 raise forms.ValidationError(_("The two password fields didn't match."))
         return self.cleaned_data
+
+
+class UserProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = UserModel()
+        fields = ['email', 'first_name', 'last_name']
+
+    required_css_class = 'required'
+
+    email = forms.EmailField(label=_("Your email address"))
+
+    first_name = forms.CharField(label=_("First Name"))
+    last_name = forms.CharField(label=_("Last Name"))

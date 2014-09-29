@@ -30,3 +30,11 @@
         text-align: center;
     }
 }
+
+.form-alt-link {
+    margin-left: 15px;
+}
+
+.form-alt-link:hover {
+    text-decoration: none;
+}

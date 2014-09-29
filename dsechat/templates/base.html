@@ -18,6 +18,7 @@
         <!-- Site CSS -->
         <link rel="stylesheet" href="{% static 'css/fixed_navbar.css' %}"/>
         <link rel="stylesheet" href="{% static 'css/registration_form.css' %}"/>
+        <link rel="stylesheet" href="{% static 'css/user_profile.css' %}"/>
         {#        <link rel="stylesheet" href="styles/main.css">#}
         {#        <link rel="stylesheet" href="styles/chat.css">#}
         {#        <link rel="stylesheet" href="styles/setup.css">#}
@@ -58,12 +59,15 @@
                     <li class="{% ancestor 'web:setup' %}"><a href="{% url 'web:setup' %}">Setup</a></li>
                 </ul>
 
-                {% if user.is_authenticated %}
-                    <ul class="nav navbar-nav pull-right">
+                <ul class="nav navbar-nav pull-right">
+                    {% if user.is_authenticated %}
                         <li><a href="{% url 'accounts:logout' %}">Sign out</a></li>
-                    </ul>
-                    <p class="navbar-text pull-right">Hello, {{ user.first_name }}</p>
-                {% endif %}
+                        </ul>
+                        <p class="navbar-text pull-right">Hello, {{ user.first_name }}</p>
+                    {% else %}
+                        <li><a href="{% url 'accounts:login' %}">Sign in</a></li>
+                        </ul>
+                    {% endif %}
             </div>
             <!--/.nav-collapse -->
         </div>

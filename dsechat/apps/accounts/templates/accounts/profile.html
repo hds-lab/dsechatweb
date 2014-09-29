@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% block content %}
+
+    <div class="focus-form-wrapper user-profile">
+        <h1 class="page-header">Welcome, {{ object.first_name }}!</h1>
+
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="row">
+                    <label class="col-sm-2">Username:</label>
+
+                    <div class="col-sm-10">{{ object.username }}</div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-2">Password:</label>
+
+                    <div class="col-sm-10">
+                        <a class="btn btn-default btn-sm" href="{% url 'accounts:password_change' %}">Change</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-2">Name:</label>
+
+                    <div class="col-sm-10">
+                        {{ object.first_name }} {{ object.last_name }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label class="col-sm-2">Email:</label>
+
+                    <div class="col-sm-10">{{ object.email }}</div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <a href="{% url 'accounts:profile_update' %}" class="btn btn-primary">Edit Profile</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

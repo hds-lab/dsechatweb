@@ -26,6 +26,10 @@
 
                     {% buttons %}
                         <button type="submit" class="btn btn-primary btn-lg">Sign in</button>
+                        <a class="form-alt-link"
+                           href="{% url 'accounts:registration_register' %}">Create an account</a>
+                        <a class="form-alt-link"
+                           href="{% url 'accounts:password_reset' %}">I forgot my password</a>
                     {% endbuttons %}
                 </form>
             </div>

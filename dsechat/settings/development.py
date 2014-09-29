@@ -16,6 +16,13 @@ ALLOWED_HOSTS=('localhost',)
 TEMPLATE_DEBUG = DEBUG
 
 ##################################################################
+# Email settings
+##################################################################
+
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = SITE_DIR / 'mail'
+
+##################################################################
 # Databases settings
 ##################################################################
 
