@@ -4,15 +4,19 @@
 }
 
 .focus-form-wrapper .form-left-col {
-    padding-right: 5px;
-}
-
-.focus-form-wrapper .form-right-col {
-    padding-left: 5px;
+    margin-bottom: 10px;
 }
 
 .focus-form-wrapper .page-header {
     border-bottom: none;
+}
+
+.focus-form-wrapper .form-group:last-child {
+    margin-bottom: 0;
+}
+
+.focus-form-wrapper .btn {
+    margin: 5px 0;
 }
 
 @media (min-width: 768px) {
@@ -29,10 +33,26 @@
     .focus-form-wrapper .lead {
         text-align: center;
     }
+
+    .focus-form-wrapper .form-left-col {
+        padding-right: 5px;
+        margin-bottom: 0;
+    }
+
+    .focus-form-wrapper .form-right-col {
+        padding-left: 5px;
+    }
+
+    .focus-form-wrapper .btn {
+        margin: 0;
+    }
 }
 
 .form-alt-link {
-    margin-left: 15px;
+    padding: 10px;
+    white-space: nowrap;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .form-alt-link:hover {

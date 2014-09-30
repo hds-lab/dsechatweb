@@ -1,6 +1,8 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from registration.models import UserModel
+from models import User as AccountsUser
+
 
 class UserRegistrationForm(forms.Form):
     """
@@ -13,14 +15,14 @@ class UserRegistrationForm(forms.Form):
     need, but should avoid defining a ``save()`` method -- the actual
     saving of collected user data is delegated to the active
     registration backend.
-
     """
     required_css_class = 'required'
 
     username = forms.RegexField(regex=r'^[\w.@+-]+$',
                                 max_length=30,
                                 label=_("Create a username"),
-                                error_messages={'invalid': _("Your username may contain only letters, numbers and @/./+/-/_ characters.")})
+                                error_messages={'invalid': _(
+                                    "Your username may contain only letters, numbers and @/./+/-/_ characters.")})
     email = forms.EmailField(label=_("Your email address"))
 
     first_name = forms.CharField(label=_("First Name"))
@@ -83,3 +85,24 @@ class UserProfileUpdateForm(forms.ModelForm):
             raise forms.ValidationError(_('A user with that email address already exists.'))
         else:
             return email
+
+
+class ConsentForm(forms.ModelForm):
+    class Meta:
+        model = AccountsUser
+        fields = ['gives_consent', 'over18']
+
+    required_css_class = 'required'
+
+    gives_consent = forms.BooleanField(label=_("I agree to participate in the research"),
+                                       required=False)
+
+    over18 = forms.BooleanField(label=_("I am 18 years of age or older"),
+                                required=False)
+
+    def clean(self):
+        over18 = self.cleaned_data.get('over18')
+        gives_consent = self.cleaned_data.get('gives_consent')
+        if gives_consent and not over18:
+            raise forms.ValidationError(_('You must be at least 18 years old to participate in the research.'))
+        return self.cleaned_data

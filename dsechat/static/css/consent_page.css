@@ -1,0 +1,39 @@
+.consent-form {
+}
+
+.consent-form.focus-form-wrapper {
+    max-width: 600px;
+}
+
+.consent-form .panel-heading {
+    text-align: center;
+}
+
+.consent-form .panel-body {
+    max-height: 400px;
+    overflow-y: auto;
+    -webkit-box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.consent-form .panel-footer {
+    text-align: center;
+}
+
+.study-information h4 {
+    font-size: 14px;
+    margin-bottom: 0;
+    font-weight: bold;
+}
+
+.study-information p {
+    margin-bottom: 15px;
+}
+
+.consent-info .page-header {
+    border-bottom: none;
+}
+.consent-info .panel-footer {
+    text-align: center;
+}

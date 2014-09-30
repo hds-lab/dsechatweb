@@ -4,4 +4,14 @@
 
 .quick-buttons {
     margin-bottom: 20px;
+    text-align: center;
+}
+
+.quick-buttons .btn {
+    width: 300px;
+    height: 120px;
+    line-height: 120px;
+    font-size: 24px;
+    padding: 0;
+    margin: 10px;
 }

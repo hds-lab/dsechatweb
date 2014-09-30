@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.shortcuts import redirect
 from django.contrib.auth.tokens import default_token_generator
 from django.http import HttpResponseRedirect
 from django.utils.translation import ugettext as _
@@ -17,8 +18,10 @@ from django.utils.http import urlsafe_base64_decode
 from registration.models import UserModel
 from registration import signals
 from registration.backends.simple.views import RegistrationView as SimpleRegistrationView
+from django.conf import settings
 
-from forms import UserRegistrationForm, UserProfileUpdateForm
+from forms import UserRegistrationForm, UserProfileUpdateForm, ConsentForm
+from models import User as AccountsUser
 import auth_cbv
 
 
@@ -40,7 +43,7 @@ class UserRegistrationView(SimpleRegistrationView):
         return new_user
 
     def get_success_url(self, request, user):
-        return ('accounts:profile', (), {})
+        return ('accounts:consent', (), {})
 
 
 class UserProfileView(generic.DetailView):
@@ -72,6 +75,27 @@ class UserProfileUpdateView(generic.UpdateView):
         result = super(UserProfileUpdateView, self).form_valid(form)
         messages.success(self.request, "Your profile has been updated.")
         return result
+
+
+class UserConsentView(generic.UpdateView):
+    model = AccountsUser
+    template_name = 'accounts/consent_form.html'
+    form_class = ConsentForm
+    success_url = reverse_lazy('accounts:profile')
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def get(self, request, *args, **kwargs):
+        # you can't use this form if you've already consented
+        if self.request.user and self.request.user.is_authenticated and self.request.user.gives_consent:
+            return redirect('web:consent_info')
+        return super(UserConsentView, self).get(request, *args, **kwargs)
+
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(UserConsentView, self).dispatch(*args, **kwargs)
 
 
 class PasswordChangeView(auth_cbv.PasswordChangeView):

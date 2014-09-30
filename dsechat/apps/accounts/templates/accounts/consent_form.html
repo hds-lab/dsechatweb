@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load bootstrap3 staticfiles %}
+
+{% block page_js %}
+    {{ block.super }}
+
+    <script type="text/javascript" src="{% static 'js/consent_form.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="consent-form focus-form-wrapper">
+        <h1 class="page-header">You can help!</h1>
+
+        <p class="lead">Support data science by participating in our research</p>
+
+        <form role="form"
+              action="{% url 'accounts:consent' %}"
+              method="post">
+            {% csrf_token %}
+            <div class="panel panel-default">
+            <div class="panel-heading">
+                <strong>Consent Information</strong>
+            </div>
+                <div class="panel-body">
+                    {% include 'snippets/study_information.html' %}
+                </div>
+                <div class="panel-footer">
+                    {% bootstrap_form_errors form %}
+
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label for="{{ form.over18.id_for_label }}">
+                                <input id="{{ form.over18.id_for_label }}"
+                                       name="{{ form.over18.name }}"
+                                       type="checkbox"
+                                    {% if form.over18.value %}checked="true"{% endif %}/>
+                                {{ form.over18.label }}
+                            </label>
+                        </div>
+                    </div>
+
+                    <input type="hidden"
+                           name="{{ form.gives_consent.name }}"
+                           id="{{ form.gives_consent.id_for_label }}"
+                           value="{{ form.gives_consent.value }}"/>
+
+                    {% buttons %}
+                        <button type="button" class="btn btn-default btn-lg no-consent-button">No thank you</button>
+                        <button type="button" class="btn btn-primary btn-lg consent-button">I agree to participate</button>
+                    {% endbuttons %}
+                </div>
+            </div>
+
+        <script type="text/javascript">
+            window.consent_form = {
+                consent_field_selector: '#{{ form.gives_consent.id_for_label }}'
+            };
+        </script>
+        </form>
+    </div>
+{% endblock %}

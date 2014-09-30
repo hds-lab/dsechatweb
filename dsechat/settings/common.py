@@ -61,7 +61,7 @@ LANGUAGE_CODE = 'en'
 ##################################################################
 
 # The model to use to represent a User.
-AUTH_USER_MODEL = 'auth.User'
+AUTH_USER_MODEL = 'accounts.User'
 
 # The URL where requests are redirected for login.
 LOGIN_URL = '/accounts/login/'
@@ -249,6 +249,8 @@ REGISTRATION_OPEN = True
 # Site settings
 ##################################################################
 
+STUDY_CONTACT_NAME = 'Study Contact'
+STUDY_CONTACT_EMAIL = 'study@example.com'
 SITE_CONTACT_EMAIL = 'info@example.com'
 XMPP_SERVER = 'xmpp.example.com'
 XMPP_BOSH_URL = '/http-bind/'

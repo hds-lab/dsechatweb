@@ -12,9 +12,13 @@ urlpatterns = patterns('',
                            views.UserProfileView.as_view(),
                            name='profile'),
 
-                        url(r'^update/$',
-                            views.UserProfileUpdateView.as_view(),
-                            name='profile_update'),
+                       url(r'^update/$',
+                           views.UserProfileUpdateView.as_view(),
+                           name='profile_update'),
+
+                       url(r'^study/consent/$',
+                           views.UserConsentView.as_view(),
+                           name='consent'),
 
                        # Registration urls
                        url(r'^register/$',

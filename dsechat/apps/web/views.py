@@ -39,5 +39,20 @@ class ChatView(TemplateView):
         return context
 
 
+class ConsentInfoView(TemplateView):
+    template_name = 'web/consent_page.html'
+
+
+class ContactView(TemplateView):
+    template_name = "web/contact.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(ContactView, self).get_context_data(**kwargs)
+        context['study_contact_name'] = settings.STUDY_CONTACT_NAME
+        context['study_contact_email'] = settings.STUDY_CONTACT_EMAIL
+        context['site_contact_email'] = settings.SITE_CONTACT_EMAIL
+        return context
+
+
 class ResearchView(TemplateView):
     template_name = "web/research.html"
