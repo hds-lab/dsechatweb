@@ -12,8 +12,10 @@ class HomeView(TemplateView):
         context['contact_email'] = settings.SITE_CONTACT_EMAIL
         return context
 
+
 class SetupView(TemplateView):
     template_name = "web/setup.html"
+
     def get_context_data(self, **kwargs):
         context = super(SetupView, self).get_context_data(**kwargs)
         context['xmpp_server'] = settings.XMPP_SERVER
@@ -22,11 +24,20 @@ class SetupView(TemplateView):
         context['xmpp_muc_server'] = settings.XMPP_MUC_SERVER
         return context
 
+
 class RegisterView(TemplateView):
     template_name = "web/signup.html"
 
+
 class ChatView(TemplateView):
     template_name = "web/chat.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(ChatView, self).get_context_data(**kwargs)
+        context['xmpp_server'] = settings.XMPP_SERVER
+        context['xmpp_bosh_url'] = settings.XMPP_BOSH_URL
+        return context
+
 
 class ResearchView(TemplateView):
     template_name = "web/research.html"

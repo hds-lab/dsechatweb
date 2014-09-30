@@ -31,7 +31,10 @@
 
     <script type="text/javascript">
         window.webchat = {
-            assets: '{% static "vendor/bower/candy/res/" %}'
+            assets: '{% static "vendor/bower/candy/res/" %}',
+            username: '{{ user.username|default:'undefined' }}',
+            xmpp_server: '{{ xmpp_server }}',
+            xmpp_bosh_url: '{{ xmpp_bosh_url }}'
         };
     </script>
 {% endblock %}

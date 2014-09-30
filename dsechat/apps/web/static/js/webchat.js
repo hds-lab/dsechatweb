@@ -1,5 +1,7 @@
 $(document).ready(function () {
-    Candy.init('http-bind/', {
+    var conf = window.webchat;
+
+    Candy.init(conf.xmpp_bosh_url, {
         core: {
             // only set this to true if developing / debugging errors
             debug: false,
@@ -11,7 +13,7 @@ $(document).ready(function () {
             autojoin: true
         },
         view: {
-            assets: window.webchat.assets
+            assets: conf.assets
         }
     });
 
@@ -22,6 +24,10 @@ $(document).ready(function () {
     CandyShop.TypingNotifications.init();
 //    CandyShop.Refocus.init();
 
-    Candy.Core.connect();
+    if (conf.username) {
+        Candy.Core.connect(conf.username);
+    } else {
+        Candy.Core.connect();
+    }
 
 });

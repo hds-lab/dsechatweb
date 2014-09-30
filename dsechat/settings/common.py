@@ -251,6 +251,7 @@ REGISTRATION_OPEN = True
 
 SITE_CONTACT_EMAIL = 'info@example.com'
 XMPP_SERVER = 'xmpp.example.com'
+XMPP_BOSH_URL = '/http-bind/'
 XMPP_SERVER_PORT = 5222
 XMPP_MUC_ROOM = 'Data Science'
 XMPP_MUC_SERVER = 'conference.xmpp.example.com'
