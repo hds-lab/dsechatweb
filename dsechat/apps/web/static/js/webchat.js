@@ -1,6 +1,8 @@
 $(document).ready(function () {
     var conf = window.webchat;
 
+    CandyShop.Bootstrapify.init();
+
     Candy.init(conf.xmpp_bosh_url, {
         core: {
             // only set this to true if developing / debugging errors
@@ -22,6 +24,11 @@ $(document).ready(function () {
     CandyShop.Replies.init();
     CandyShop.Timeago.init();
     CandyShop.TypingNotifications.init();
+
+    CandyShop.AutoDomain.init({
+        xmppDomain: conf.xmpp_server
+    });
+
 //    CandyShop.Refocus.init();
 
     if (conf.username) {

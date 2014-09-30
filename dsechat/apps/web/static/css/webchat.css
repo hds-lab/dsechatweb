@@ -1,7 +1,23 @@
+/* Shift things around to avoid the fixed navbar and sticky footer */
+
 .webchat-wrapper {
     position: absolute;
     left: 0;
     right: 0;
     top: 51px;
     bottom: 60px;
+}
+
+.modal-backdrop,
+.modal {
+    top: 51px;
+    bottom: 60px;
+}
+
+.modal-body {
+    padding: 25px;
+}
+
+.modal .form-control {
+    border-radius: 2px;
 }
