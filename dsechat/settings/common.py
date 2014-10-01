@@ -223,16 +223,9 @@ EXTERNAL_APPS = (
 
 INTERNAL_APPS = (
     # Application specific apps
-    # 'dsechat.libs.openfire',
     'dsechat.apps.web',
     'dsechat.apps.accounts',
 )
-
-# OPENFIRE_SETTINGS = {
-#     'USER_SERVICE': environ.get('OPENFIRE_USER_SERVICE', '/plugins/userService/userservice'),
-#     'SECRET': environ.get('OPENFIRE_SECRET', 'bigsecret'),
-#     'DEFAULT_GROUPS': (environ.get('OPENFIRE_GROUPNAME'),)
-# }
 
 ##################################################################
 # Registration settings
@@ -249,12 +242,11 @@ REGISTRATION_OPEN = True
 # Site settings
 ##################################################################
 
-STUDY_CONTACT_NAME = 'Study Contact'
-STUDY_CONTACT_EMAIL = 'study@example.com'
-SITE_CONTACT_EMAIL = 'info@example.com'
-XMPP_SERVER = 'xmpp.example.com'
-XMPP_BOSH_URL = '/http-bind/'
-XMPP_SERVER_PORT = 5222
-XMPP_MUC_ROOM = 'Data Science'
-XMPP_MUC_SERVER = 'conference.xmpp.example.com'
-
+STUDY_CONTACT_NAME = environ.get("STUDY_CONTACT_NAME", 'Study Contact')
+STUDY_CONTACT_EMAIL = environ.get("STUDY_CONTACT_EMAIL", 'study@example.com')
+SITE_CONTACT_EMAIL = environ.get("SITE_CONTACT_EMAIL", 'info@example.com')
+XMPP_SERVER = environ.get("XMPP_SERVER", 'xmpp.example.com')
+XMPP_BOSH_URL = environ.get("XMPP_BOSH_URL", '/http-bind/')
+XMPP_SERVER_PORT = int(environ.get("XMPP_SERVER_PORT", 5222))
+XMPP_MUC_ROOM = environ.get("XMPP_MUC_ROOM", 'Data Science')
+XMPP_MUC_SERVER = environ.get("XMPP_MUC_SERVER", 'conference.%s' % XMPP_SERVER)

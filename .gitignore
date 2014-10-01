@@ -58,3 +58,5 @@ nosetests.xml
 /.env
 /db/*.sqlite
 /CACHE
+
+/.fabricrc

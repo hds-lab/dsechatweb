@@ -1,0 +1,30 @@
+# Generated: {{ generated_time }}
+# Updated: {{ generated_time }}
+
+# Fill in these values with your deployment settings
+DJANGO_SETTINGS_MODULE={{ django_settings_module }}
+
+# What port will your web server listen on?
+PORT=8000
+
+# Where is your database?
+# https://github.com/kennethreitz/dj-database-url
+# e.g. mysql://USER:PASSWORD@HOST:PORT/NAME
+DATABASE_URL=mysql://{{ app_name }}:password@localhost:3306/{{ app_name }}
+
+SECRET_KEY={{ secret_key }}
+
+# Contact information
+STUDY_CONTACT_NAME=Your Name
+STUDY_CONTACT_EMAIL=study@example.com
+SITE_CONTACT_EMAIL =info@example.com
+
+# XMPP Configuration
+XMPP_SERVER=xmpp.example.com
+XMPP_BOSH_URL=/http-bind/
+XMPP_SERVER_PORT=5222
+XMPP_MUC_ROOM=Data Science
+XMPP_MUC_SERVER=conference.xmpp.example.com
+
+# Optional comma-separated list of hosts
+# ALLOWED_HOSTS=localhost

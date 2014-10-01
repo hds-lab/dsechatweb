@@ -1,22 +1,17 @@
 from common import *
 from os import environ
+import dj_database_url
 
 # Below are things we might need to deal with later
 ########## EMAIL CONFIGURATION
+
 ########## DATABASE CONFIGURATION
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': SITE_DIR + '/db/development.sqlite'
-    },
-
-    'test': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': SITE_DIR + '/db/testing.sqlite'
-    }
+    'default': dj_database_url.config(default='sqlite:///%s' % (SITE_DIR / 'db/development.sqlite'))
 }
 
 ########## CACHE CONFIGURATION
+
 ########## STORAGE CONFIGURATION
 
 ########## SECRET CONFIGURATION
@@ -41,6 +36,3 @@ COMPRESS_ENABLED = True
 
 # The hosts that we are allowed to serve as
 ALLOWED_HOSTS = environ.get("ALLOWED_HOSTS", 'localhost').split(',')
-
-
-SITE_CONTACT_EMAIL = environ.get("SITE_CONTACT_EMAIL", 'info@example.com')
