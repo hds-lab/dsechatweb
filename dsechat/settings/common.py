@@ -29,7 +29,8 @@ sys.path.append(LIBS_DIR)
 ROOT_URLCONF = 'dsechat.urls'
 
 # WSGI application
-WSGI_APPLICATION = 'dsechat.wsgi.application'
+WSGI_MODULE = 'dsechat.wsgi'
+WSGI_APPLICATION = WSGI_MODULE + '.application'
 
 # Secret key
 # This is used to provide cryptographic signing, and should be set

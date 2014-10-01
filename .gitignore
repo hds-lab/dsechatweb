@@ -60,3 +60,5 @@ nosetests.xml
 /CACHE
 
 /.fabricrc
+/.vagrant
+

@@ -47,6 +47,7 @@ DEVELOPMENT_APPS = (
 
     # If you're using Django 1.7.x or later
     'debug_toolbar.apps.DebugToolbarConfig',
+    'djsupervisor',
 )
-
+djsupervisor
 INSTALLED_APPS = EXTERNAL_APPS + DEVELOPMENT_APPS + INTERNAL_APPS

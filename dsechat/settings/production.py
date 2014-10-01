@@ -36,3 +36,21 @@ COMPRESS_ENABLED = True
 
 # The hosts that we are allowed to serve as
 ALLOWED_HOSTS = environ.get("ALLOWED_HOSTS", 'localhost').split(',')
+
+##################################################################
+# Gunicorn config
+##################################################################
+
+GUNICORN_CONF = 'gunicorn.conf.py'
+
+##################################################################
+# Installed apps
+##################################################################
+
+PRODUCTION_APPS = (
+    # Production-specific apps here
+
+    'djsupervisor',
+)
+
+INSTALLED_APPS = EXTERNAL_APPS + PRODUCTION_APPS + INTERNAL_APPS

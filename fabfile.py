@@ -39,18 +39,33 @@ def _read_package():
             _package_already_read = json.load(packfile)
     return _package_already_read
 
-
-def _check_exists(*commands):
+def _check_exists(command):
     with quiet():
-        for command in commands:
-            if not run('command -v %s' % command).succeeded:
-                print red("Command '") + yellow(command) + red("' does not exist on the host!")
-                exit(1)
+        return run('command -v %s' % command).succeeded
 
+def _require_command(*commands):
+    for command in commands:
+        if not _check_exists(command):
+            print red("Command '") + yellow(command) + red("' does not exist on the host!")
+            exit(1)
 
 def _command_succeeds(command):
     with quiet():
         return run(command).succeeded
+
+def _read_vagrant_keyfile():
+    """Get the private key file for connecting to the vagrant box"""
+    with hide('running'):
+        result = local('vagrant ssh-config', capture=True)
+        for line in result.splitlines():
+            line = line.strip()
+            if line.startswith('IdentityFile '):
+                return line[len('IdentityFile '):]
+
+
+def _run_softly(*args, **kwargs):
+    with hide('running', 'output'):
+        return run(*args, **kwargs)
 
 
 def test(integration=1):
@@ -85,11 +100,28 @@ def production():
 
     if env.target_directory == "~/":
         print yellow("You must have 'name' in your package.json file or set PRODUCTION_APPDIR in your .env file")
+        exit(1)
 
 
-def _run_softly(*args, **kwargs):
-    with hide('running', 'output'):
-        run(*args, **kwargs)
+def vagrant():
+    denv = _read_env()
+    package = _read_package()
+
+    env.host_string = '127.0.0.1:2222'
+    env.user = 'vagrant'
+    env.key_filename = _read_vagrant_keyfile()
+    env.disable_known_hosts = True
+
+    env.target_directory = '~/' + package['name']
+
+    env.app_name = package['name']
+    env.repo_url = package['repository']
+    env.pip_requirements = 'requirements/DEVELOPMENT requirements/PRODUCTION'
+    env.django_settings_module = 'dsechat.settings.production'
+
+    if env.target_directory == "~/":
+        print yellow("You must have 'name' in your package.json file")
+        exit(1)
 
 
 def install():
@@ -98,8 +130,8 @@ def install():
         exit(1)
 
     print green("Checking system requirements...")
-    _check_exists('pip', 'mkvirtualenv', 'rmvirtualenv')
-    _check_exists('npm')
+    _require_command('pip', 'mkvirtualenv', 'rmvirtualenv')
+    _require_command('npm')
     print green("All good.")
 
     print green("Making sure we haven't already done this...")
