@@ -61,4 +61,5 @@ nosetests.xml
 
 /.fabricrc
 /.vagrant
+/vagrant_deploy
 

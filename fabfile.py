@@ -39,9 +39,11 @@ def _read_package():
             _package_already_read = json.load(packfile)
     return _package_already_read
 
+
 def _check_exists(command):
     with quiet():
         return run('command -v %s' % command).succeeded
+
 
 def _require_command(*commands):
     for command in commands:
@@ -49,9 +51,11 @@ def _require_command(*commands):
             print red("Command '") + yellow(command) + red("' does not exist on the host!")
             exit(1)
 
+
 def _command_succeeds(command):
     with quiet():
         return run(command).succeeded
+
 
 def _read_vagrant_keyfile():
     """Get the private key file for connecting to the vagrant box"""
@@ -95,7 +99,7 @@ def production():
     env.target_directory = denv.get('PRODUCTION_APPDIR', '~/' + package['name'])
     env.app_name = package['name']
     env.repo_url = package['repository']
-    env.pip_requirements = 'requirements/PRODUCTION'
+    env.pip_requirements = ('requirements/PRODUCTION',)
     env.django_settings_module = 'dsechat.settings.production'
 
     if env.target_directory == "~/":
@@ -116,7 +120,7 @@ def vagrant():
 
     env.app_name = package['name']
     env.repo_url = package['repository']
-    env.pip_requirements = 'requirements/DEVELOPMENT requirements/PRODUCTION'
+    env.pip_requirements = ('requirements/DEVELOPMENT', 'requirements/PRODUCTION')
     env.django_settings_module = 'dsechat.settings.production'
 
     if env.target_directory == "~/":
@@ -130,8 +134,9 @@ def install():
         exit(1)
 
     print green("Checking system requirements...")
+    _require_command('git')
     _require_command('pip', 'mkvirtualenv', 'rmvirtualenv')
-    _require_command('npm')
+    _require_command('npm', 'bower')
     print green("All good.")
 
     print green("Making sure we haven't already done this...")
@@ -139,8 +144,9 @@ def install():
     skip_proj_dir = False
     if files.exists(env.target_directory):
         print yellow("The app target directory already exists." % env)
-        if console.confirm("Would you like to delete %(target_directory)s?" % env, False):
-            _run_softly('rm -rf %(target_directory)s' % env)
+        if console.confirm("Would you like to clean %(target_directory)s?" % env, False):
+            with hide('everything'):
+                run('rm -rf %(target_directory)s/* %(target_directory)s/.*' % env, warn_only=True)
         else:
             skip_proj_dir = True
 
@@ -175,55 +181,63 @@ def install():
             skip_env_file = True
 
     if not skip_env_file:
-        import base64
-        from datetime import datetime
-        env_context = {
-            'django_settings_module': env.get('django_settings_module', 'dsechat.settings.development'),
-            'app_name': env.get('app_name', 'something'),
-            'secret_key': base64.b64encode(os.urandom(24)),
-            'generated_time': datetime.now()
-        }
-
-        files.upload_template('dot_env.txt', dot_env_file,
-                              context=env_context, use_jinja=True, template_dir='setup/templates',
-                              mode=0600) # make it secret
-
-        print green("Created an incomplete environment file at %s" % dot_env_file)
+        dot_env(dot_env_file)
 
     print yellow("Don't forget to edit the .env file with your deployment settings.")
     print yellow("You still need to configure:")
-    print yellow("  - A MySQL database")
-    print yellow("  - Your web server pointing to the django app")
+    print yellow("  - A database")
+    print yellow("  - A web server pointing to the django app")
     print yellow("  - The contact info and xmpp details")
     print yellow("  - An upstart job to keep the server running")
 
     print green("Initial install complete. Ready for staging.")
 
+
+def dot_env(dot_env_file):
+    import base64
+    from datetime import datetime
+    env_context = {
+        'django_settings_module': env.get('django_settings_module', 'dsechat.settings.development'),
+        'app_name': env.get('app_name', 'something'),
+        'secret_key': base64.b64encode(os.urandom(24)),
+        'generated_time': datetime.now()
+    }
+
+    files.upload_template('dot_env.txt', dot_env_file,
+                          context=env_context, use_jinja=True, template_dir='setup/templates',
+                          mode=0600) # make it secret
+
+    print green("Created a starter environment file at %s" % dot_env_file)
+
 def staging():
-    # path to the directory on the server where your vhost is set up
-    path = "/home/ubuntu/www/dev.yaconiello.com"
-    # name of the application process
-    process = "staging"
 
     with prefix('workon %(app_name)s' % env):
         print green("Installing python requirements...")
-        run('pip install -r %(pip_requirements)s' % env)
+        for req in env.pip_requirements:
+            run('pip install -r %s' % req)
 
-    print(red("Beginning Deploy:"))
-    with cd("%s/app" % path):
-        run("pwd")
-        print green("Pulling master from GitHub...")
-        run("git pull origin master")
-        print green("Installing npm and bower requirements...")
-        run("npm install && bower install")
-        print(green("Installing python requirements..."))
-        run("source %s/venv/bin/activate && pip install -r requirements.txt" % path)
-        print(green("Collecting static files..."))
-        run("source %s/venv/bin/activate && python manage.py collectstatic --noinput" % path)
-        print(green("Syncing the database..."))
-        run("source %s/venv/bin/activate && python manage.py syncdb" % path)
-        print(green("Migrating the database..."))
-        run("source %s/venv/bin/activate && python manage.py migrate" % path)
-        print(green("Restart the uwsgi process"))
-        run("sudo service %s restart" % process)
-    print(red("DONE!"))
+        print green("Installing node.js requirements...")
+        run('npm install')
+
+        print green("Installing bower requirements...")
+        run('bower install')
+
+
+    # print(red("Beginning Deploy:"))
+    # with cd("%s/app" % path):
+    #     run("pwd")
+    #     print green("Pulling master from GitHub...")
+    #     run("git pull origin master")
+    #     print green("Installing npm and bower requirements...")
+    #     run("npm install && bower install")
+    #     print(green("Installing python requirements..."))
+    #     run("source %s/venv/bin/activate && pip install -r requirements.txt" % path)
+    #     print(green("Collecting static files..."))
+    #     run("source %s/venv/bin/activate && python manage.py collectstatic --noinput" % path)
+    #     print(green("Syncing the database..."))
+    #     run("source %s/venv/bin/activate && python manage.py syncdb" % path)
+    #     print(green("Migrating the database..."))
+    #     run("source %s/venv/bin/activate && python manage.py migrate" % path)
+    #     print(green("Restart the uwsgi process"))
+    #     run("sudo service %s restart" % process)
+    # print(red("DONE!"))

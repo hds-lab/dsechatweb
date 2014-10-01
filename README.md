@@ -34,3 +34,15 @@ chat.data.uw.edu
 6.  Run the development webserver:
         
         $ ./manage.py serve
+
+
+## Testing with Vagrant
+
+Create a vagrant box and install some packages:
+    
+    # A folder that will sync the project files on the guest vm
+    $ mkdir vagrant_deploy
+    $ vagrant up
+    $ fab vagrant install
+    
+
