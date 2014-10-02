@@ -8,8 +8,9 @@ from fabric.contrib import files, console
 from fabric.colors import red, green, yellow
 from fabric.context_managers import warn_only, quiet, prefix, hide
 from contextlib import contextmanager as _contextmanager
+from path import path
 
-root_dir = os.path.dirname(os.path.realpath(__file__))
+root_dir = path(__file__).abspath().realpath().dirname()
 sys.path.append(root_dir)
 
 def _is_local():
@@ -24,12 +25,11 @@ def virtualenv():
         with prefix('workon %s' % env.app_name):
             yield
 
-
 def _remote(*args, **kwargs):
     if 'capture' in kwargs:
         del kwargs['capture']
     return run(*args, **kwargs)
-    
+
 _env_already_read = None
 
 
@@ -54,7 +54,7 @@ def _read_package():
     if not _package_already_read:
         import json
 
-        with open(os.path.join(root_dir, 'package.json')) as packfile:
+        with open(root_dir / 'package.json') as packfile:
             _package_already_read = json.load(packfile)
     return _package_already_read
 
@@ -63,13 +63,13 @@ def _check_exists(command):
     with quiet():
         return env.run('command -v %s' % command).succeeded
 
-        
+
 def _backup_file(file_path):
     with warn_only():
         env.run('cp %s %s.bak 2> /dev/null || :' % (file_path, file_path))
 
-        
-def _jinja_render(template, template_dir=root_dir, context={}):
+
+def _jinja_render(template, template_dir=root_dir, context=None):
     """Render a template. Expects path relative to root_dir."""
     from jinja2 import Environment, FileSystemLoader
     environment = Environment(loader=FileSystemLoader(template_dir))
@@ -80,14 +80,14 @@ def _jinja_render(template, template_dir=root_dir, context={}):
 
 def _get_settings():
     denv = _read_env()
-    
+
     env.django_settings_module = denv.get('DJANGO_SETTINGS_MODULE', 'dsechat.settings.production')
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', env.django_settings_module)
-    
+
     from django.conf import settings
     return settings
 
-    
+
 def _require_command(*commands):
     for command in commands:
         if not _check_exists(command):
@@ -140,13 +140,13 @@ def test(integration=1):
 
     env.run(command)
 
-    
+
 def target_production():
     """Prepare to connect to the production server"""
-    
+
     env.machine_target = 'production'
     env.run = _remote
-    
+
     denv = _read_env()
 
     env.host_string = denv['PRODUCTION_HOST']
@@ -157,20 +157,20 @@ def target_production():
 
     env.django_settings_module = 'dsechat.settings.production'
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', env.django_settings_module)
-    
+
     if env.target_directory == "~/":
         print yellow("You must have 'name' in your package.json file or set PRODUCTION_APPDIR in your .env file")
         exit(1)
 
     print green("Running on %s" % env.host_string)
 
-    
+
 def target_vagrant():
     """Prepare to connect to a local vagrant VM"""
 
     env.machine_target = 'vagrant'
     env.run = _remote
-    
+
     env.host_string = '127.0.0.1:2222'
     env.user = 'vagrant'
     env.key_filename = _read_vagrant_keyfile()
@@ -184,12 +184,12 @@ def target_vagrant():
         exit(1)
 
     print green("Running on %s" % env.host_string)
-        
-def install_dependencies():
+
+def depends():
     """Installs local packages"""
-    
+
     with virtualenv():
-        
+
         print green("Installing python requirements...")
         for req in env.pip_requirements:
             env.run('pip install -r %s' % req)
@@ -199,14 +199,15 @@ def install_dependencies():
 
         print green("Installing bower requirements...")
         env.run('bower install --config.interactive=false')
+        env.run('bower prune --config.interactive=false')
 
 
-def install():
+def remote_install():
     """Checks some system requirements and checks out the project code"""
 
     if _is_local():
         print red("This command cannot be run locally. Use 'fab target_vagrant install', for example.")
-    
+
     print green("Checking system requirements...")
     _require_command('git')
     _require_command('pip', 'mkvirtualenv', 'rmvirtualenv')
@@ -247,7 +248,7 @@ def install():
         with hide('output'):
             env.run('git clone %(repo_url)s %(target_directory)s' % env)
 
-    install_dependencies()
+    depends()
 
     dot_env_file = env.target_directory + '/local/.env'
     if _no_file_or_backed_up(dot_env_file):
@@ -270,7 +271,7 @@ def install():
 
 def update_app():
     """Updates the code, database, and static files"""
-    
+
     with virtualenv():
         print green("Running migrations...")
         env.run('python manage.py migrate')
@@ -284,35 +285,45 @@ def git_pull():
     with virtualenv():
         print green("Pulling master from GitHub...")
         env.run('git pull origin master')
-        
+
 
 def staging():
     """Update the code and project requirements"""
-    
+
     git_pull()
-    install_dependencies()
+    depends()
     update_app()
     web_refresh()
-        
+
     print green("Deployment complete!")
 
-def _jinja_render_to(template, context, output_file):
+def _jinja_render_to(template, context, output):
+
+
+    if not _is_local():
+        print red("You can't render templates remotely due to path issues. Sorry!")
+        exit(1)
+
+    if not os.path.isabs(output):
+        output = root_dir / output
+
+    # Local rendering
     newconf = _jinja_render(template, template_dir='setup/templates', context=context)
 
     # Back up first
-    _backup_file(output_file)
+    _backup_file(output)
 
-    with open(output_file, 'w') as outfile:
+    with open(output, 'w') as outfile:
         outfile.write(newconf)
 
-    print green("Created %s" % output_file)
+    print green("Created %s" % output)
 
-        
+
 def gen_nginx_conf(nginx_conf_file='local/nginx.conf'):
     """Generate a sample nginx conf file"""
 
     settings = _get_settings()
-    
+
     from datetime import datetime
     nginx_context = {
         'app_name': env.get('app_name', 'my_special_app'),
@@ -320,13 +331,13 @@ def gen_nginx_conf(nginx_conf_file='local/nginx.conf'):
         'settings': settings,
     }
 
-    _jinja_render_to('nginx.conf', context=nginx_context, output_file=nginx_conf_file)
-    
+    _jinja_render_to('nginx.conf', context=nginx_context, output=nginx_conf_file)
+
 
 def gen_upstart_conf(upstart_conf_file='local/upstart.conf'):
     """Generate a sample upstart conf file"""
     settings = _get_settings()
-    
+
     from datetime import datetime
     upstart_context = {
         'upstart_log': '/var/log/%s.upstart.log' % env.app_name,
@@ -336,7 +347,7 @@ def gen_upstart_conf(upstart_conf_file='local/upstart.conf'):
         'settings': settings,
     }
     _jinja_render_to('upstart.conf', context=upstart_context, output=upstart_conf_file)
-    
+
 
 def gen_dot_env(dot_env_file='local/.env'):
     """Generates a .env file"""
@@ -350,7 +361,7 @@ def gen_dot_env(dot_env_file='local/.env'):
     }
 
     _jinja_render_to('upstart.conf', context=upstart_context, output=upstart_conf_file)
-    
+
     files.upload_template('dot_env.txt', dot_env_file,
                           context=env_context, use_jinja=True, template_dir='setup/templates',
                           mode=0600) # make it secret
@@ -386,7 +397,7 @@ def status():
 def web_refresh():
     """Trigger Gunicorn's 'hot refresh' feature."""
     if env.django_settings_module == 'dsechat.settings.production':
-        print green("Refreshing the web server...")    
+        print green("Refreshing the web server...")
         pid = _web_pid()
         env.run('kill -HUP %s' % pid)
 
@@ -439,10 +450,10 @@ def web_scale(direction='up'):
 def _target_local():
     package = _read_package()
     settings = _get_settings()
-    
+
     env.app_name = package['name']
     env.repo_url = package['repository']
-    
+
     env.run = local
     env.machine_target = 'local'
 
@@ -450,6 +461,6 @@ def _target_local():
         env.pip_requirements = ('requirements/PRODUCTION',)
     else:
         env.pip_requirements = ('requirements/DEVELOPMENT',)
-    
+
 # default to local run
 _target_local()
