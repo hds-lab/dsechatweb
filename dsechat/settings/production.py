@@ -47,6 +47,7 @@ PORT = int(environ.get("PORT", '8000'))
 GUNICORN_CONF = 'gunicorn.conf.py'
 GUNICORN_ERROR_LOG = SITE_DIR / 'local' / 'gunicorn.error.log'
 GUNICORN_ACCESS_LOG = SITE_DIR / 'local' / 'gunicorn.access.log'
+GUNICORN_WORKERS = environ.get("GUNICORN_WORKERS", 1)
 
 ##################################################################
 # Supervisord config

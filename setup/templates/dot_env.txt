@@ -8,6 +8,9 @@ DJANGO_SETTINGS_MODULE={{ django_settings_module }}
 WEB_BIND_IP=127.0.0.1
 PORT=8000
 
+# GUNICORN_WORKERS=2
+# STATIC_ROOT=/some/directory/staticfiles/
+
 # Where is your database?
 # https://github.com/kennethreitz/dj-database-url
 # e.g. mysql://USER:PASSWORD@HOST:PORT/NAME

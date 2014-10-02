@@ -13,7 +13,7 @@ bind = "%(ip)s:%(port)s" % {
 }
 
 # workers = multiprocessing.cpu_count() * 2 + 1
-workers = 1
+workers = settings.GUNICORN_WORKERS
 
 from django.conf import settings
 accesslog = settings.GUNICORN_ACCESS_LOG
