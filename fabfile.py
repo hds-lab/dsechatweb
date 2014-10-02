@@ -178,25 +178,38 @@ def install():
         with hide('output'):
             run('git clone %(repo_url)s %(target_directory)s' % env)
 
-    dot_env_file = env.target_directory + '/.env'
-    skip_env_file = False
-    if files.exists(dot_env_file):
-        print yellow("There is already an existing .env file.")
-        if not console.confirm("Do you want to back it up and continue anyway?", False):
-            skip_env_file = True
+    samples_dir = env.target_directory + '/conf/'
 
-    if not skip_env_file:
+    dot_env_file = samples_dir + '/.env'
+    if _no_file_or_backed_up(dot_env_file):
         dot_env(dot_env_file)
 
-    print yellow("Don't forget to edit the .env file with your deployment settings.")
-    print yellow("You still need to configure:")
-    print yellow("  - A database")
-    print yellow("  - A web server pointing to the django app")
-    print yellow("  - The contact info and xmpp details")
-    print yellow("  - An upstart job to keep the server running")
+
+    nginx_conf_file = samples_dir + '/nginx_site.conf'
+    if _no_file_or_backed_up(nginx_conf_file):
+        nginx_conf(nginx_conf_file)
+
+    upstart_file = samples_dir + '/upstart.conf'
+    if _no_file_or_backed_up(upstart_file):
+        pass
+
+    print green('-----------------------------------')
+    print yellow("Before you continue:")
+    print yellow("  - Make sure your database is ready for access")
+    print yellow("  - Check your webserver configuration. An nginx sample is in %s" % nginx_conf_file)
+    print yellow("  - Install an upstart service. A sample is in %s" % upstart_file)
+    print yellow("  - Make sure your .env file contains the proper settings.")
+    print yellow("    You can copy the sample from %s to %s and modify as needed." % (dot_env_file, env.target_directory))
 
     print green("Initial install complete. Ready for staging.")
 
+def _no_file_or_backed_up(target_file):
+    if files.exists(target_file):
+        print yellow("Already exists: %s" % target_file)
+        if not console.confirm("Generate a new one? (the old one will be backed up)", False):
+            return True
+        return False
+    return True
 
 def nginx_conf(nginx_conf_file):
 
@@ -236,6 +249,7 @@ def dot_env(dot_env_file):
                           mode=0600) # make it secret
 
     print green("Created a starter environment file at %s" % dot_env_file)
+
 
 def staging():
 
