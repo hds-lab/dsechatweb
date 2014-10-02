@@ -29,12 +29,12 @@ EMAIL_FILE_PATH = SITE_DIR / 'mail'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': SITE_DIR + '/db/development.sqlite'
+        'NAME': SITE_DIR + '/local/development.sqlite'
     },
 
     'test': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': SITE_DIR + '/db/testing.sqlite'
+        'NAME': SITE_DIR + '/local/testing.sqlite'
     }
 }
 

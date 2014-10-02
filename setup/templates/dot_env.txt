@@ -7,8 +7,6 @@ DJANGO_SETTINGS_MODULE={{ django_settings_module }}
 # What ip and port will your web server listen on
 WEB_BIND_IP=127.0.0.1
 PORT=8000
-# GUNICORN_ACCESS_LOG=
-# GUNICORN_ERROR_LOG=
 
 # Where is your database?
 # https://github.com/kennethreitz/dj-database-url

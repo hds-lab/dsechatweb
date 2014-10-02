@@ -217,7 +217,7 @@ def install():
     with prefix('workon %(app_name)s' % env):
         _install_dependencies()
 
-    dot_env_file = env.target_directory + '/.env'
+    dot_env_file = env.target_directory + '/local/.env'
     if _no_file_or_backed_up(dot_env_file):
         gen_dot_env(dot_env_file)
 
@@ -229,9 +229,10 @@ def install():
     print
     print yellow("Things you still need to do:")
     print yellow("  - Make sure your database is ready for access")
-    print yellow("  - Make sure your %s file contains the proper database settings." % dot_env_file)
-    print yellow("  - Check your webserver configuration (use 'fab nginx_conf')")
-    print yellow("  - Install an upstart service (use 'fab upstart_conf')")
+    print yellow("  - Make sure your %s file contains the proper settings." % dot_env_file)
+    print yellow("    and copy it to the project directory.")
+    print yellow("  - Check your webserver configuration (use 'fab gen_nginx_conf')")
+    print yellow("  - Install an upstart service (use 'fab gen_upstart_conf')")
     print yellow("  - Finish setting up the application with the 'fab %s staging'" % env.machine_target)
     print green("Initial install complete.")
 
@@ -255,7 +256,7 @@ def staging():
         print green("Restarting the web process...")
 
 
-def gen_nginx_conf(nginx_conf_file='nginx.conf'):
+def gen_nginx_conf(nginx_conf_file='local/nginx.conf'):
     """Generate a sample nginx conf file"""
     _common_settings()
 
@@ -282,7 +283,7 @@ def gen_nginx_conf(nginx_conf_file='nginx.conf'):
     print green("Created a sample nginx conf file at %s" % nginx_conf_file)
 
 
-def gen_upstart_conf(upstart_conf_file='upstart.conf'):
+def gen_upstart_conf(upstart_conf_file='local/upstart.conf'):
     """Generate a sample upstart conf file"""
     _common_settings()
 
@@ -310,7 +311,7 @@ def gen_upstart_conf(upstart_conf_file='upstart.conf'):
 
     print green("Created a sample upstart init file at %s" % upstart_conf_file)
 
-def gen_dot_env(dot_env_file='.env'):
+def gen_dot_env(dot_env_file='local/.env'):
     """Generates a .env file"""
     import base64
     from datetime import datetime
@@ -328,7 +329,7 @@ def gen_dot_env(dot_env_file='.env'):
     print green("Created a starter environment file at %s" % dot_env_file)
 
 
-def gen_supervisor_conf(conf_file='supervisord.conf.tmp'):
+def gen_supervisor_conf(conf_file='local/supervisord.conf.tmp'):
     """Generates a supervisord conf file based on the django template supervisord.conf"""
     # Back up first
     _backup_file(conf_file)
@@ -339,17 +340,17 @@ def gen_supervisor_conf(conf_file='supervisord.conf.tmp'):
 def _web_pid():
     """Get the pid of the web process"""
     with quiet():
-        local('python manage.py supervisor getconfig > .tmpsupervisord.conf')
-        pid = local('supervisorctl -c .tmpsupervisord.conf pid web', capture=True)
-        local('rm .tmpsupervisord.conf')
+        local('python manage.py supervisor getconfig > local/.tmpsupervisord.conf')
+        pid = local('supervisorctl -c local/.tmpsupervisord.conf pid web', capture=True)
+        local('rm local/.tmpsupervisord.conf')
         return pid
 
 def status():
     """Get the status of supervisor processes"""
     with hide('running'):
-        local('python manage.py supervisor getconfig > .tmpsupervisord.conf')
-        local('supervisorctl -c .tmpsupervisord.conf status')
-        local('rm .tmpsupervisord.conf')
+        local('python manage.py supervisor getconfig > local/.tmpsupervisord.conf')
+        local('supervisorctl -c local/.tmpsupervisord.conf status')
+        local('rm local/.tmpsupervisord.conf')
 
 def web_refresh():
     """Trigger Gunicorn's 'hot refresh' feature."""

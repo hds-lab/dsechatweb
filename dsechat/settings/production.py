@@ -7,7 +7,7 @@ import dj_database_url
 
 ########## DATABASE CONFIGURATION
 DATABASES = {
-    'default': dj_database_url.config(default='sqlite:///%s' % (SITE_DIR / 'db/development.sqlite'))
+    'default': dj_database_url.config(default='sqlite:///%s' % (SITE_DIR / 'local/development.sqlite'))
 }
 
 ########## CACHE CONFIGURATION
@@ -45,12 +45,14 @@ ALLOWED_HOSTS = environ.get("ALLOWED_HOSTS", 'localhost').split(',')
 WEB_BIND_IP = environ.get("WEB_BIND_IP", 'localhost')
 PORT = int(environ.get("PORT", '8000'))
 GUNICORN_CONF = 'gunicorn.conf.py'
+GUNICORN_ERROR_LOG = SITE_DIR / 'local' / 'gunicorn.error.log'
+GUNICORN_ACCESS_LOG = SITE_DIR / 'local' / 'gunicorn.access.log'
 
 ##################################################################
 # Supervisord config
 ##################################################################
 
-# SUPERVISOR_LOG=
+SUPERVISOR_LOG=SITE_DIR / 'local' / 'supervisord.log'
 # SUPERVISOR_LOG_MAXBYTES=
 # SUPERVISOR_LOG_BACKUPS=
 

@@ -56,10 +56,9 @@ nosetests.xml
 
 # Dist settings
 /.env
-/db/*.sqlite
-/CACHE
+/local
+/collectstatic
 
 /.fabricrc
 /.vagrant
 /vagrant_deploy
-

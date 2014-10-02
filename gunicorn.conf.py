@@ -15,5 +15,6 @@ bind = "%(ip)s:%(port)s" % {
 # workers = multiprocessing.cpu_count() * 2 + 1
 workers = 1
 
-accesslog = os.environ.get('GUNICORN_ACCESS_LOG', '/var/log/dsechatweb.gunicorn.access.log')
-errorlog = os.environ.get('GUNICORN_ERROR_LOG', '/var/log/dsechatweb.gunicorn.error.log')
+from django.conf import settings
+accesslog = settings.get('GUNICORN_ACCESS_LOG', 'gunicorn.access.log')
+errorlog = settings.get('GUNICORN_ERROR_LOG', 'gunicorn.error.log')
