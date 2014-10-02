@@ -400,10 +400,13 @@ def status():
 
 def web_refresh():
     """Trigger Gunicorn's 'hot refresh' feature."""
-    if env.django_settings_module == 'dsechat.settings.production':
-        print green("Refreshing the web server...")
-        pid = _web_pid()
-        env.run('kill -HUP %s' % pid)
+    with _virtualenv():
+        if _check_exists('gunicorn'):
+            print green("Refreshing the web server...")
+            pid = _web_pid()
+            env.run('kill -HUP %s' % pid)
+        else:
+            print yellow("Gunicorn not present. Restart your web server yourself.")
 
 def web_restart():
     """Hard restart Gunicorn"""
