@@ -12,9 +12,8 @@ bind = "%(ip)s:%(port)s" % {
     'ip': os.environ.get('WEB_BIND_IP', '127.0.0.1')
 }
 
-# workers = multiprocessing.cpu_count() * 2 + 1
-workers = settings.GUNICORN_WORKERS
-
 from django.conf import settings
-accesslog = settings.GUNICORN_ACCESS_LOG
-errorlog = settings.GUNICORN_ERROR_LOG
+# workers = multiprocessing.cpu_count() * 2 + 1
+workers = os.environ.get("GUNICORN_WORKERS", 1)
+accesslog = settings.SITE_DIR / 'local' / 'gunicorn.access.log'
+errorlog = settings.SITE_DIR / 'local' / 'gunicorn.error.log'
