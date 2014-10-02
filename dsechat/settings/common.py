@@ -127,7 +127,7 @@ STATICFILES_FINDERS = (
 ##################################################################
 
 COMPRESS_PRECOMPILERS = (
-    ('text/less', (SITE_DIR / 'node_modules/.bin/lessc') + ' {infile} {outfile}'),
+    ('text/less', (SITE_DIR / 'node_modules/less/bin/lessc') + ' {infile} {outfile}'),
 )
 
 ##################################################################

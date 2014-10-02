@@ -38,11 +38,28 @@ chat.data.uw.edu
 
 ## Testing with Vagrant
 
-Create a vagrant box and install some packages:
+Create a vagrant box and install some stuff:
     
     # A folder that will sync the project files on the guest vm
     $ mkdir vagrant_deploy
     $ vagrant up
     $ fab vagrant install
-    
+    $ fab vagrant staging
 
+Next, SSH into the VM (or open the synced folder `vagrant_deploy`)
+and set up the .env file:
+    
+    # ssh'ed into the VM
+    $ workon dsechatweb
+    $ cp conf/.env .env
+
+Check that everything looks ok.
+
+Now, generate a sample nginx conf on the remote machine and customize it:
+
+    # on the remote machine
+    $ fab nginx_conf:conf/nginx_site.conf
+    $ sudo cp conf/nginx_site.conf /etc/nginx/sites-available/dsechatweb.conf
+    $ sudo ln -s /etc/nginx/sites-available/dsechatweb.conf /etc/nginx/sites-enabled/dsechatweb.conf
+    $ sudo nginx -s reload
+move the nginx configuration into /etc/nginx/sites-available

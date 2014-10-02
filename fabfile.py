@@ -44,6 +44,18 @@ def _check_exists(command):
     with quiet():
         return run('command -v %s' % command).succeeded
 
+def _backup_file(file_path):
+    with warn_only():
+        local('cp %s %s.bak 2> /dev/null || :' % (file_path, file_path))
+
+def _jinja_render(template, template_dir=root_dir, context={}):
+    """Render a template. Expects path relative to root_dir."""
+    from jinja2 import Environment, FileSystemLoader
+    environment = Environment(loader=FileSystemLoader(template_dir))
+
+    template = environment.get_template(template)
+    return template.render(context)
+
 
 def _require_command(*commands):
     for command in commands:
@@ -72,6 +84,15 @@ def _run_softly(*args, **kwargs):
         return run(*args, **kwargs)
 
 
+def _no_file_or_backed_up(target_file):
+    if files.exists(target_file):
+        print yellow("Already exists: %s" % target_file)
+        if not console.confirm("Generate a new one? (the old one will be backed up)", False):
+            return True
+        return False
+    return True
+
+
 def test(integration=1):
     """
     Execute the tests suite with the correct settings. Accept one
@@ -88,22 +109,25 @@ def test(integration=1):
 
     local(command)
 
+def _common_settings():
+    package = _read_package()
+    env.app_name = package['name']
+    env.repo_url = package['repository']
+    env.django_settings_module = 'dsechat.settings.production'
 
 def production():
     """Prepare to connect to the production server"""
+    _common_settings()
 
     env.machine_target = 'production'
 
     denv = _read_env()
-    package = _read_package()
 
     env.host_string = denv['PRODUCTION_HOST']
     env.user = denv['PRODUCTION_USER']
-    env.target_directory = denv.get('PRODUCTION_APPDIR', '~/' + package['name'])
-    env.app_name = package['name']
-    env.repo_url = package['repository']
+
+    env.target_directory = denv.get('PRODUCTION_APPDIR', '~/' + env.app_name)
     env.pip_requirements = ('requirements/PRODUCTION',)
-    env.django_settings_module = 'dsechat.settings.production'
 
     if env.target_directory == "~/":
         print yellow("You must have 'name' in your package.json file or set PRODUCTION_APPDIR in your .env file")
@@ -111,22 +135,18 @@ def production():
 
 
 def vagrant():
-    env.machine_target = 'vagrant'
+    """Prepare to connect to a local vagrant VM"""
+    _common_settings()
 
-    denv = _read_env()
-    package = _read_package()
+    env.machine_target = 'vagrant'
 
     env.host_string = '127.0.0.1:2222'
     env.user = 'vagrant'
     env.key_filename = _read_vagrant_keyfile()
     env.disable_known_hosts = True
 
-    env.target_directory = '~/' + package['name']
-
-    env.app_name = package['name']
-    env.repo_url = package['repository']
+    env.target_directory = '~/' + env.app_name
     env.pip_requirements = ('requirements/DEVELOPMENT', 'requirements/PRODUCTION')
-    env.django_settings_module = 'dsechat.settings.production'
 
     if env.target_directory == "~/":
         print yellow("You must have 'name' in your package.json file")
@@ -178,7 +198,8 @@ def install():
         with hide('output'):
             run('git clone %(repo_url)s %(target_directory)s' % env)
 
-    samples_dir = env.target_directory + '/conf/'
+    samples_dir = env.target_directory + '/conf'
+    run('mkdir -p %s' % samples_dir)
 
     dot_env_file = samples_dir + '/.env'
     if _no_file_or_backed_up(dot_env_file):
@@ -187,7 +208,8 @@ def install():
 
     nginx_conf_file = samples_dir + '/nginx_site.conf'
     if _no_file_or_backed_up(nginx_conf_file):
-        nginx_conf(nginx_conf_file)
+
+        run('fab nginx_conf:%s' % nginx_conf_file)
 
     upstart_file = samples_dir + '/upstart.conf'
     if _no_file_or_backed_up(upstart_file):
@@ -203,33 +225,29 @@ def install():
 
     print green("Initial install complete. Ready for staging.")
 
-def _no_file_or_backed_up(target_file):
-    if files.exists(target_file):
-        print yellow("Already exists: %s" % target_file)
-        if not console.confirm("Generate a new one? (the old one will be backed up)", False):
-            return True
-        return False
-    return True
 
 def nginx_conf(nginx_conf_file):
-
-    denv = _read_env()
+    _common_settings()
 
     import os
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", denv['DJANGO_SETTINGS_MODULE'])
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", env.django_settings_module)
 
     sys.path.append(root_dir)
     from django.conf import settings
     from datetime import datetime
     nginx_context = {
-        'django_settings_module': env.get('django_settings_module', 'dsechat.settings.development'),
-        'app_name': env.get('app_name', 'something'),
+        'app_name': env.get('app_name', 'my_special_app'),
         'generated_time': datetime.now(),
         'settings': settings,
     }
 
-    files.upload_template('nginx_vhost.conf', nginx_conf_file,
-                          context=nginx_context, use_jinja=True, template_dir='setup/templates')
+    newconf = _jinja_render('nginx_vhost.conf', template_dir='setup/templates', context=nginx_context)
+
+    # Back up first
+    _backup_file(nginx_conf_file)
+
+    with open(nginx_conf_file, 'w') as outfile:
+        outfile.write(newconf)
 
     print green("Created a sample nginx conf file at %s" % nginx_conf_file)
 
@@ -263,7 +281,7 @@ def staging():
             run('pip install -r %s' % req)
 
         print green("Installing node.js requirements...")
-        run('npm install')
+        run('npm install --no-bin-link')
 
         print green("Installing bower requirements...")
         run('bower install --config.interactive=false')
@@ -271,6 +289,9 @@ def staging():
         print green("Running migrations...")
         run('python manage.py migrate')
 
+        print green("Gathering and preprocessing static files...")
+        run('python manage.py collectstatic')
+        run('python manage.py compress')
 
     # print(red("Beginning Deploy:"))
     # with cd("%s/app" % path):
