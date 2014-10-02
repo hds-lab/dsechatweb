@@ -17,7 +17,7 @@ def _is_local():
     return env.run == local
 
 @_contextmanager
-def virtualenv():
+def _virtualenv():
     if _is_local():
         # Nothing to do
         yield
@@ -188,7 +188,7 @@ def target_vagrant():
 def depends():
     """Installs local packages"""
 
-    with virtualenv():
+    with _virtualenv():
 
         print green("Installing python requirements...")
         for req in env.pip_requirements:
@@ -269,10 +269,11 @@ def remote_install():
     print yellow("  - Finish setting up the application with the 'fab %s staging'" % env.machine_target)
     print green("Initial install complete.")
 
+
 def update_app():
     """Updates the code, database, and static files"""
 
-    with virtualenv():
+    with _virtualenv():
         print green("Running migrations...")
         env.run('python manage.py migrate')
 
@@ -280,15 +281,19 @@ def update_app():
         env.run('python manage.py collectstatic --noinput')
         env.run('python manage.py compress')
 
+
 def git_pull():
     """Update the git repo"""
-    with virtualenv():
+    with _virtualenv():
         print green("Pulling master from GitHub...")
         env.run('git pull origin master')
 
 
 def staging():
     """Update the code and project requirements"""
+
+    if not _is_local():
+        print yellow("Make sure you have pushed the latest version to github!")
 
     git_pull()
     depends()
@@ -298,7 +303,6 @@ def staging():
     print green("Deployment complete!")
 
 def _jinja_render_to(template, context, output):
-
 
     if not _is_local():
         print red("You can't render templates remotely due to path issues. Sorry!")
@@ -380,7 +384,7 @@ def gen_supervisor_conf(conf_file='local/supervisord.conf.tmp'):
 def _web_pid():
     """Get the pid of the web process"""
     with quiet():
-        with virtualenv():
+        with _virtualenv():
             env.run('python manage.py supervisor getconfig > local/.tmpsupervisord.conf')
             pid = env.run('supervisorctl -c local/.tmpsupervisord.conf pid web', capture=True)
             env.run('rm local/.tmpsupervisord.conf')
@@ -389,7 +393,7 @@ def _web_pid():
 def status():
     """Get the status of supervisor processes"""
     with hide('running'):
-        with virtualenv():
+        with _virtualenv():
             env.run('python manage.py supervisor getconfig > local/.tmpsupervisord.conf')
             env.run('supervisorctl -c local/.tmpsupervisord.conf status')
             env.run('rm local/.tmpsupervisord.conf')
