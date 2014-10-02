@@ -255,6 +255,10 @@ def staging():
 
         print green("Restarting the web process...")
 
+        with hide('output'):
+            run('fab web_refresh')
+
+        print green("Deployment complete!")
 
 def gen_nginx_conf(nginx_conf_file='local/nginx.conf'):
     """Generate a sample nginx conf file"""
