@@ -1,11 +1,12 @@
 {% load compress static lineage bootstrap3 %}
 <!doctype html>
-<html class="no-js">
+<html class="no-js" lang="en">
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Data Science Chat{% endblock %}</title>
     <meta name="description" content="A chat room for data scientists">
-    <meta name="viewport" content="width=device-width">
     <link rel="shortcut icon" href="{% static 'favicon.ico' %}">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
@@ -13,6 +14,7 @@
         {% compress css %}
             <!-- Vendor css -->
             <link rel="stylesheet" href="{% static 'vendor/bower/bootstrap/dist/css/bootstrap.css' %}"/>
+            <link rel="stylesheet" href="{% static 'vendor/bower/ie10-viewport-fix/ie10-viewport-fix.css' %}
         {% endcompress %}
 
         {% compress css %}
@@ -24,17 +26,9 @@
             <link rel="stylesheet" href="{% static 'css/research_page.css' %}"/>
             <link rel="stylesheet" href="{% static 'css/setup_page.css' %}"/>
             <link rel="stylesheet" href="{% static 'css/consent_page.css' %}"/>
-            {#        <link rel="stylesheet" href="styles/main.css">#}
-            {#        <link rel="stylesheet" href="styles/chat.css">#}
-            {#        <link rel="stylesheet" href="styles/setup.css">#}
         {% endcompress %}
 
     {% endblock %}
-
-    {% compress js %}
-        <!-- Modernizr JS -->
-        <script src="{% static 'vendor/bower/modernizr/modernizr.js' %}"></script>
-    {% endcompress %}
 
 </head>
 <body>
@@ -110,6 +104,7 @@
         <script src="{% static 'vendor/bower/underscore/underscore.js' %}"></script>
         <script src="{% static 'vendor/bower/backbone/backbone.js' %}"></script>
         <script src="{% static 'vendor/bower/bootstrap/dist/js/bootstrap.js' %}"></script>
+        <script src="{% static 'vendor/bower/wp8-ie10-fix/wp8-ie10-fix.js' %}"></script>
     {% endcompress %}
 {% endblock %}
 

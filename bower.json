@@ -2,13 +2,12 @@
   "name": "dsechatweb",
   "author": "Michael Brooks <mjbrooks@uw.edu>",
   "version": "0.0.0",
+  "private": true,
   "dependencies": {
-    "jquery": "~1.9.0",
-    "modernizr": "~2.8.3",
-    "backbone": "~1.1.2",
-    "underscore": "~1.7.0",
     "bootstrap": "~3.2.0",
     "candy": "~1.7.1",
-    "candy-plugins": "git://github.com/candy-chat/candy-plugins.git"
+    "candy-plugins": "git://github.com/candy-chat/candy-plugins.git",
+    "wp8-ie10-fix": "https://gist.github.com/4617428.git",
+    "ie10-viewport-fix": "https://gist.github.com/b8f97527b694febee5f4.git"
   }
 }
