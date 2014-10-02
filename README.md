@@ -9,7 +9,6 @@ chat.data.uw.edu
     - Node.js v0.10
     - MySQL 5.5 
     - Nginx or some other web server
-    
 
 2.  Make, enter and activate a virtualenv.
 
@@ -73,7 +72,4 @@ You may also want to generate an upstart conf file:
     # Check that it looks right
     $ sudo mv upstart.conf /etc/init/dsechatweb.conf
     $ sudo start dsechatweb
-    $ sudo ln -s /etc/nginx/sites-available/dsechatweb.conf /etc/nginx/sites-enabled/dsechatweb.conf
-    $ sudo nginx -s reload
         
-move the nginx configuration into /etc/nginx/sites-available
