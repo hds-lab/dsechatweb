@@ -44,22 +44,31 @@ Create a vagrant box and install some stuff:
     $ mkdir vagrant_deploy
     $ vagrant up
     $ fab vagrant install
+
+Next, assuming your database has already been created, make sure 
+it is properly entered into the newly-created `.env` file on the VM.
+
+If that looks ok, you can run the staging command:
+
     $ fab vagrant staging
-
-Next, SSH into the VM (or open the synced folder `vagrant_deploy`)
-and set up the .env file:
-    
-    # ssh'ed into the VM
-    $ workon dsechatweb
-    $ cp conf/.env .env
-
-Check that everything looks ok.
 
 Now, generate a sample nginx conf on the remote machine and customize it:
 
-    # on the remote machine
-    $ fab nginx_conf:conf/nginx_site.conf
-    $ sudo cp conf/nginx_site.conf /etc/nginx/sites-available/dsechatweb.conf
+    # On the VM...
+    $ fab gen_nginx_conf
+    # Take a look and make sure it has everything right
+    $ sudo mv nginx.conf /etc/nginx/sites-available/dsechatweb.conf
     $ sudo ln -s /etc/nginx/sites-available/dsechatweb.conf /etc/nginx/sites-enabled/dsechatweb.conf
     $ sudo nginx -s reload
+
+You may also want to generate an upstart conf file:
+
+    # On the VM...
+    $ fab upstart_conf
+    # Check that it looks right
+    $ sudo mv upstart.conf /etc/init/dsechatweb.conf
+    $ sudo start dsechatweb
+    $ sudo ln -s /etc/nginx/sites-available/dsechatweb.conf /etc/nginx/sites-enabled/dsechatweb.conf
+    $ sudo nginx -s reload
+        
 move the nginx configuration into /etc/nginx/sites-available

@@ -42,6 +42,8 @@ ALLOWED_HOSTS = environ.get("ALLOWED_HOSTS", 'localhost').split(',')
 # Gunicorn config
 ##################################################################
 
+WEB_BIND_IP = environ.get("WEB_BIND_IP", 'localhost')
+PORT = int(environ.get("PORT", '8000'))
 GUNICORN_CONF = 'gunicorn.conf.py'
 
 ##################################################################

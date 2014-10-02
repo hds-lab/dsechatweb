@@ -101,7 +101,7 @@ MIDDLEWARE_CLASSES = (
 
 # The absolute path to the directory where collectstatic will
 # collect static files for deployment.
-STATIC_ROOT = SITE_DIR / 'collectstatic'
+STATIC_ROOT = SITE_DIR / 'collectstatic' / ''
 
 # URL to use when referring to static files located in STATIC_ROOT.
 STATIC_URL = '/static/'

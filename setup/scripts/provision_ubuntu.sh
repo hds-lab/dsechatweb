@@ -16,7 +16,8 @@ apt-get install -y git build-essential \
                    mysql-server \
                    nginx \
                    python python-pip python-dev libmysqlclient-dev \
-                   nodejs
+                   nodejs \
+                   emacs23-nox
 
 # Global python packages
 echo "Installing global python packages..."

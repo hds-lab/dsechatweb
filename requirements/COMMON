@@ -1,4 +1,5 @@
 Fabric==1.10.0
+jinja2==2.7.3
 
 path.py==6.0
 

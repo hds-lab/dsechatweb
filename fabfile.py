@@ -3,7 +3,7 @@
 import sys
 import os
 
-from fabric.api import local, env, run, cd
+from fabric.api import local, env, run, cd, lcd
 from fabric.contrib import files, console
 from fabric.colors import red, green, yellow
 from fabric.context_managers import warn_only, quiet, prefix, hide
@@ -115,6 +115,7 @@ def _common_settings():
     env.repo_url = package['repository']
     env.django_settings_module = 'dsechat.settings.production'
 
+
 def production():
     """Prepare to connect to the production server"""
     _common_settings()
@@ -153,7 +154,22 @@ def vagrant():
         exit(1)
 
 
+def _install_dependencies():
+    """Installs local packages"""
+    print green("Installing python requirements...")
+    for req in env.pip_requirements:
+        run('pip install -r %s' % req)
+
+    print green("Installing node.js requirements...")
+    run('npm install --no-bin-link')
+
+    print green("Installing bower requirements...")
+    run('bower install --config.interactive=false')
+
+
 def install():
+    """Checks some system requirements and checks out the project code"""
+
     if 'target_directory' not in env:
         print yellow("Run 'fab production install' to load remote configuration")
         exit(1)
@@ -198,35 +214,48 @@ def install():
         with hide('output'):
             run('git clone %(repo_url)s %(target_directory)s' % env)
 
-    samples_dir = env.target_directory + '/conf'
-    run('mkdir -p %s' % samples_dir)
+    _install_dependencies()
 
-    dot_env_file = samples_dir + '/.env'
+    dot_env_file = env.target_directory + '/.env'
     if _no_file_or_backed_up(dot_env_file):
-        dot_env(dot_env_file)
+        gen_dot_env(dot_env_file)
 
+    print green('----------- .env file -------------')
 
-    nginx_conf_file = samples_dir + '/nginx_site.conf'
-    if _no_file_or_backed_up(nginx_conf_file):
-
-        run('fab nginx_conf:%s' % nginx_conf_file)
-
-    upstart_file = samples_dir + '/upstart.conf'
-    if _no_file_or_backed_up(upstart_file):
-        pass
+    run('cat %s' % dot_env_file)
 
     print green('-----------------------------------')
-    print yellow("Before you continue:")
+    print
+    print yellow("Things you still need to do:")
     print yellow("  - Make sure your database is ready for access")
-    print yellow("  - Check your webserver configuration. An nginx sample is in %s" % nginx_conf_file)
-    print yellow("  - Install an upstart service. A sample is in %s" % upstart_file)
-    print yellow("  - Make sure your .env file contains the proper settings.")
-    print yellow("    You can copy the sample from %s to %s and modify as needed." % (dot_env_file, env.target_directory))
+    print yellow("  - Make sure your %s file contains the proper database settings." % dot_env_file)
+    print yellow("  - Check your webserver configuration (use 'fab nginx_conf')")
+    print yellow("  - Install an upstart service (use 'fab upstart_conf')")
+    print yellow("  - Finish setting up the application with the 'fab %s staging'" % env.machine_target)
+    print green("Initial install complete.")
 
-    print green("Initial install complete. Ready for staging.")
+
+def staging():
+    """Update the code and project requirements"""
+    with prefix('workon %(app_name)s' % env):
+
+        print green("Pulling master from GitHub...")
+        run('git pull origin master')
+
+        _install_dependencies()
+
+        print green("Running migrations...")
+        run('python manage.py migrate')
+
+        print green("Gathering and preprocessing static files...")
+        run('python manage.py collectstatic --noinput')
+        run('python manage.py compress')
+
+        print green("Restarting the web process...")
 
 
-def nginx_conf(nginx_conf_file):
+def gen_nginx_conf(nginx_conf_file='nginx.conf'):
+    """Generate a sample nginx conf file"""
     _common_settings()
 
     import os
@@ -241,7 +270,7 @@ def nginx_conf(nginx_conf_file):
         'settings': settings,
     }
 
-    newconf = _jinja_render('nginx_vhost.conf', template_dir='setup/templates', context=nginx_context)
+    newconf = _jinja_render('nginx.conf', template_dir='setup/templates', context=nginx_context)
 
     # Back up first
     _backup_file(nginx_conf_file)
@@ -252,7 +281,36 @@ def nginx_conf(nginx_conf_file):
     print green("Created a sample nginx conf file at %s" % nginx_conf_file)
 
 
-def dot_env(dot_env_file):
+def gen_upstart_conf(upstart_conf_file='upstart.conf'):
+    """Generate a sample upstart conf file"""
+    _common_settings()
+
+    import os
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', env.django_settings_module)
+
+    sys.path.append(root_dir)
+    from django.conf import settings
+    from datetime import datetime
+    upstart_context = {
+        'upstart_log': '/var/log/%s.upstart.log' % env.app_name,
+        'username': os.environ.get('USER'),
+        'venv_dir': os.environ.get('VIRTUAL_ENV'),
+        'generated_time': datetime.now(),
+        'settings': settings,
+    }
+
+    newconf = _jinja_render('upstart.conf', template_dir='setup/templates', context=upstart_context)
+
+    # Back up first
+    _backup_file(upstart_conf_file)
+
+    with open(upstart_conf_file, 'w') as outfile:
+        outfile.write(newconf)
+
+    print green("Created a sample upstart init file at %s" % upstart_conf_file)
+
+def gen_dot_env(dot_env_file='.env'):
+    """Generates a .env file"""
     import base64
     from datetime import datetime
     env_context = {
@@ -269,45 +327,79 @@ def dot_env(dot_env_file):
     print green("Created a starter environment file at %s" % dot_env_file)
 
 
-def staging():
+def gen_supervisor_conf(conf_file='supervisord.conf.tmp'):
+    """Generates a supervisord conf file based on the django template supervisord.conf"""
+    # Back up first
+    _backup_file(conf_file)
 
-    with prefix('workon %(app_name)s' % env):
+    local('python manage.py supervisor getconfig > %s' % conf_file)
+    print green("Wrote supervisor conf file to %s" % conf_file)
 
-        print green("Pulling master from GitHub...")
-        run('git pull origin master')
+def _web_pid():
+    """Get the pid of the web process"""
+    with quiet():
+        local('python manage.py supervisor getconfig > .tmpsupervisord.conf')
+        pid = local('supervisorctl -c .tmpsupervisord.conf pid web', capture=True)
+        local('rm .tmpsupervisord.conf')
+        return pid
 
-        print green("Installing python requirements...")
-        for req in env.pip_requirements:
-            run('pip install -r %s' % req)
+def status():
+    """Get the status of supervisor processes"""
+    with hide('running'):
+        local('python manage.py supervisor getconfig > .tmpsupervisord.conf')
+        local('supervisorctl -c .tmpsupervisord.conf status')
+        local('rm .tmpsupervisord.conf')
 
-        print green("Installing node.js requirements...")
-        run('npm install --no-bin-link')
+def web_refresh():
+    """Trigger Gunicorn's 'hot refresh' feature."""
+    with lcd(root_dir):
+        pid = _web_pid()
+        local('kill -HUP %s' % pid)
 
-        print green("Installing bower requirements...")
-        run('bower install --config.interactive=false')
+def web_restart():
+    """Hard restart Gunicorn"""
+    local('python manage.py supervisor restart web')
 
-        print green("Running migrations...")
-        run('python manage.py migrate')
+def web_count():
+    """Get the current gunicorn web worker count"""
+    with lcd(root_dir):
+        with hide('running'):
+            count = int(local('ps -C gunicorn --no-headers | wc -l', capture=True))
 
-        print green("Gathering and preprocessing static files...")
-        run('python manage.py collectstatic')
-        run('python manage.py compress')
+        if count > 0:
+            count -= 1
 
-    # print(red("Beginning Deploy:"))
-    # with cd("%s/app" % path):
-    #     run("pwd")
-    #     print green("Pulling master from GitHub...")
-    #     run("git pull origin master")
-    #     print green("Installing npm and bower requirements...")
-    #     run("npm install && bower install")
-    #     print(green("Installing python requirements..."))
-    #     run("source %s/venv/bin/activate && pip install -r requirements.txt" % path)
-    #     print(green("Collecting static files..."))
-    #     run("source %s/venv/bin/activate && python manage.py collectstatic --noinput" % path)
-    #     print(green("Syncing the database..."))
-    #     run("source %s/venv/bin/activate && python manage.py syncdb" % path)
-    #     print(green("Migrating the database..."))
-    #     run("source %s/venv/bin/activate && python manage.py migrate" % path)
-    #     print(green("Restart the uwsgi process"))
-    #     run("sudo service %s restart" % process)
-    # print(red("DONE!"))
+        if count == 1:
+            print ("There is %d gunicorn worker running" % count)
+        else:
+            print ("There are %d gunicorn workers running" % count)
+
+        return count
+
+
+def web_scale(direction='up'):
+    """Scale up or down the gunicorn web workers"""
+    with lcd(root_dir):
+
+        before = web_count()
+
+        with hide('running'):
+            pid = _web_pid()
+
+            if direction == 'up':
+                print ("Scaling up gunicorn workers for master pid %s..." % pid)
+                local('kill -TTIN %s' % pid)
+            elif direction == 'down':
+                if before > 1:
+                    print ("Scaling down gunicorn workers for master pid %s..." % pid)
+                    local('kill -TTOU %s' % pid)
+                else:
+                    print ("There is only one web worker running. Use fab stop:web to kill gunicorn.")
+                    return
+            else:
+                raise Exception("Direction argument must be 'up' or 'down'")
+        import time
+        time.sleep(1)
+        count = web_count()
+        if count == before:
+            print ("Changes may not be immediately reflected. Check 'fab web_count' in a moment.")
