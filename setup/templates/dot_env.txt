@@ -4,7 +4,8 @@
 # Fill in these values with your deployment settings
 DJANGO_SETTINGS_MODULE={{ django_settings_module }}
 
-# What port will your web server listen on?
+# What ip and port will your web server listen on
+WEB_BIND_IP=127.0.0.1
 PORT=8000
 
 # Where is your database?
@@ -28,3 +29,8 @@ XMPP_MUC_SERVER=conference.xmpp.example.com
 
 # Optional comma-separated list of hosts
 # ALLOWED_HOSTS=localhost
+
+# Used for deployment to production
+# PRODUCTION_HOST=some.domain.here.com
+# PRODUCTION_USER=someusername
+

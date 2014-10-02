@@ -32,6 +32,7 @@ TEMPLATE_DEBUG = DEBUG
 ########## COMPRESSION CONFIGURATION
 # See: http://django_compressor.readthedocs.org/en/latest/settings/#django.conf.settings.COMPRESS_ENABLED
 COMPRESS_ENABLED = True
+COMPRESS_OFFLINE = True
 ########## END COMPRESSION CONFIGURATION
 
 # The hosts that we are allowed to serve as

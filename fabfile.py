@@ -91,6 +91,9 @@ def test(integration=1):
 
 def production():
     """Prepare to connect to the production server"""
+
+    env.machine_target = 'production'
+
     denv = _read_env()
     package = _read_package()
 
@@ -108,6 +111,8 @@ def production():
 
 
 def vagrant():
+    env.machine_target = 'vagrant'
+
     denv = _read_env()
     package = _read_package()
 
@@ -193,6 +198,29 @@ def install():
     print green("Initial install complete. Ready for staging.")
 
 
+def nginx_conf(nginx_conf_file):
+
+    denv = _read_env()
+
+    import os
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", denv['DJANGO_SETTINGS_MODULE'])
+
+    sys.path.append(root_dir)
+    from django.conf import settings
+    from datetime import datetime
+    nginx_context = {
+        'django_settings_module': env.get('django_settings_module', 'dsechat.settings.development'),
+        'app_name': env.get('app_name', 'something'),
+        'generated_time': datetime.now(),
+        'settings': settings,
+    }
+
+    files.upload_template('nginx_vhost.conf', nginx_conf_file,
+                          context=nginx_context, use_jinja=True, template_dir='setup/templates')
+
+    print green("Created a sample nginx conf file at %s" % nginx_conf_file)
+
+
 def dot_env(dot_env_file):
     import base64
     from datetime import datetime
@@ -200,7 +228,7 @@ def dot_env(dot_env_file):
         'django_settings_module': env.get('django_settings_module', 'dsechat.settings.development'),
         'app_name': env.get('app_name', 'something'),
         'secret_key': base64.b64encode(os.urandom(24)),
-        'generated_time': datetime.now()
+        'generated_time': datetime.now(),
     }
 
     files.upload_template('dot_env.txt', dot_env_file,
@@ -212,6 +240,10 @@ def dot_env(dot_env_file):
 def staging():
 
     with prefix('workon %(app_name)s' % env):
+
+        print green("Pulling master from GitHub...")
+        run('git pull origin master')
+
         print green("Installing python requirements...")
         for req in env.pip_requirements:
             run('pip install -r %s' % req)
@@ -220,7 +252,10 @@ def staging():
         run('npm install')
 
         print green("Installing bower requirements...")
-        run('bower install')
+        run('bower install --config.interactive=false')
+
+        print green("Running migrations...")
+        run('python manage.py migrate')
 
 
     # print(red("Beginning Deploy:"))
