@@ -7,9 +7,29 @@ from fabric.api import local, env, run, cd, lcd
 from fabric.contrib import files, console
 from fabric.colors import red, green, yellow
 from fabric.context_managers import warn_only, quiet, prefix, hide
+from contextlib import contextmanager as _contextmanager
 
 root_dir = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(root_dir)
 
+def _is_local():
+    return env.run == local
+
+@_contextmanager
+def virtualenv():
+    if _is_local():
+        # Nothing to do
+        yield
+    else:
+        with prefix('workon %s' % env.app_name):
+            yield
+
+
+def _remote(*args, **kwargs):
+    if 'capture' in kwargs:
+        del kwargs['capture']
+    return run(*args, **kwargs)
+    
 _env_already_read = None
 
 
@@ -17,7 +37,6 @@ def _read_env():
     global _env_already_read
 
     if not _env_already_read:
-        sys.path.append(root_dir)
         from dsechat.libs import env_file
 
         _env_already_read = env_file.read()
@@ -42,12 +61,14 @@ def _read_package():
 
 def _check_exists(command):
     with quiet():
-        return run('command -v %s' % command).succeeded
+        return env.run('command -v %s' % command).succeeded
 
+        
 def _backup_file(file_path):
     with warn_only():
-        local('cp %s %s.bak 2> /dev/null || :' % (file_path, file_path))
+        env.run('cp %s %s.bak 2> /dev/null || :' % (file_path, file_path))
 
+        
 def _jinja_render(template, template_dir=root_dir, context={}):
     """Render a template. Expects path relative to root_dir."""
     from jinja2 import Environment, FileSystemLoader
@@ -57,6 +78,16 @@ def _jinja_render(template, template_dir=root_dir, context={}):
     return template.render(context)
 
 
+def _get_settings():
+    denv = _read_env()
+    
+    env.django_settings_module = denv.get('DJANGO_SETTINGS_MODULE', 'dsechat.settings.production')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', env.django_settings_module)
+    
+    from django.conf import settings
+    return settings
+
+    
 def _require_command(*commands):
     for command in commands:
         if not _check_exists(command):
@@ -66,7 +97,7 @@ def _require_command(*commands):
 
 def _command_succeeds(command):
     with quiet():
-        return run(command).succeeded
+        return env.run(command).succeeded
 
 
 def _read_vagrant_keyfile():
@@ -81,7 +112,7 @@ def _read_vagrant_keyfile():
 
 def _run_softly(*args, **kwargs):
     with hide('running', 'output'):
-        return run(*args, **kwargs)
+        return env.run(*args, **kwargs)
 
 
 def _no_file_or_backed_up(target_file):
@@ -107,21 +138,15 @@ def test(integration=1):
     if int(integration) == 0:
         command += " --exclude='integration_tests' --exclude='jasmine_tests'"
 
-    local(command)
+    env.run(command)
 
-def _common_settings():
-    package = _read_package()
-    env.app_name = package['name']
-    env.repo_url = package['repository']
-    env.django_settings_module = 'dsechat.settings.production'
-
-
-def production():
+    
+def target_production():
     """Prepare to connect to the production server"""
-    _common_settings()
-
+    
     env.machine_target = 'production'
-
+    env.run = _remote
+    
     denv = _read_env()
 
     env.host_string = denv['PRODUCTION_HOST']
@@ -130,17 +155,22 @@ def production():
     env.target_directory = denv.get('PRODUCTION_APPDIR', '~/' + env.app_name)
     env.pip_requirements = ('requirements/PRODUCTION',)
 
+    env.django_settings_module = 'dsechat.settings.production'
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', env.django_settings_module)
+    
     if env.target_directory == "~/":
         print yellow("You must have 'name' in your package.json file or set PRODUCTION_APPDIR in your .env file")
         exit(1)
 
+    print green("Running on %s" % env.host_string)
 
-def vagrant():
+    
+def target_vagrant():
     """Prepare to connect to a local vagrant VM"""
-    _common_settings()
 
     env.machine_target = 'vagrant'
-
+    env.run = _remote
+    
     env.host_string = '127.0.0.1:2222'
     env.user = 'vagrant'
     env.key_filename = _read_vagrant_keyfile()
@@ -153,27 +183,30 @@ def vagrant():
         print yellow("You must have 'name' in your package.json file")
         exit(1)
 
-
-def _install_dependencies():
+    print green("Running on %s" % env.host_string)
+        
+def install_dependencies():
     """Installs local packages"""
-    print green("Installing python requirements...")
-    for req in env.pip_requirements:
-        run('pip install -r %s' % req)
+    
+    with virtualenv():
+        
+        print green("Installing python requirements...")
+        for req in env.pip_requirements:
+            env.run('pip install -r %s' % req)
 
-    print green("Installing node.js requirements...")
-    run('npm install --no-bin-link')
+        print green("Installing node.js requirements...")
+        env.run('npm install --no-bin-link')
 
-    print green("Installing bower requirements...")
-    run('bower install --config.interactive=false')
+        print green("Installing bower requirements...")
+        env.run('bower install --config.interactive=false')
 
 
 def install():
     """Checks some system requirements and checks out the project code"""
 
-    if 'target_directory' not in env:
-        print yellow("Run 'fab production install' to load remote configuration")
-        exit(1)
-
+    if _is_local():
+        print red("This command cannot be run locally. Use 'fab target_vagrant install', for example.")
+    
     print green("Checking system requirements...")
     _require_command('git')
     _require_command('pip', 'mkvirtualenv', 'rmvirtualenv')
@@ -187,7 +220,7 @@ def install():
         print yellow("The app target directory already exists." % env)
         if console.confirm("Would you like to clean %(target_directory)s?" % env, False):
             with hide('everything'):
-                run('rm -rf %(target_directory)s/* %(target_directory)s/.*' % env, warn_only=True)
+                env.run('rm -rf %(target_directory)s/* %(target_directory)s/.*' % env, warn_only=True)
         else:
             skip_proj_dir = True
 
@@ -201,21 +234,20 @@ def install():
 
     if not skip_proj_dir:
         print green("Creating directory %(target_directory)s" % env)
-        run('mkdir -p %(target_directory)s' % env)
+        env.run('mkdir -p %(target_directory)s' % env)
 
     if not skip_virtualenv:
         print green("Creating the %(app_name)s virtualenv" % env)
-        run('mkvirtualenv -a %(target_directory)s %(app_name)s' % env)
+        env.run('mkvirtualenv -a %(target_directory)s %(app_name)s' % env)
 
     if files.exists(env.target_directory + '/.git'):
         print yellow("The target directory already contains a git repo. Skipping git clone.")
     else:
         print green("Cloning the repository from GitHub...")
         with hide('output'):
-            run('git clone %(repo_url)s %(target_directory)s' % env)
+            env.run('git clone %(repo_url)s %(target_directory)s' % env)
 
-    with prefix('workon %(app_name)s' % env):
-        _install_dependencies()
+    install_dependencies()
 
     dot_env_file = env.target_directory + '/local/.env'
     if _no_file_or_backed_up(dot_env_file):
@@ -223,7 +255,7 @@ def install():
 
     print green('----------- .env file -------------')
 
-    run('cat %s' % dot_env_file)
+    env.run('cat %s' % dot_env_file)
 
     print green('-----------------------------------')
     print
@@ -236,29 +268,33 @@ def install():
     print yellow("  - Finish setting up the application with the 'fab %s staging'" % env.machine_target)
     print green("Initial install complete.")
 
+def update_app():
+    """Updates the code, database, and static files"""
+    
+    with virtualenv():
+        print green("Running migrations...")
+        env.run('python manage.py migrate')
+
+        print green("Gathering and preprocessing static files...")
+        env.run('python manage.py collectstatic --noinput')
+        env.run('python manage.py compress')
+
+def git_pull():
+    """Update the git repo"""
+    with virtualenv():
+        print green("Pulling master from GitHub...")
+        env.run('git pull origin master')
+        
 
 def staging():
     """Update the code and project requirements"""
-    with prefix('workon %(app_name)s' % env):
-
-        print green("Pulling master from GitHub...")
-        run('git pull origin master')
-
-        _install_dependencies()
-
-        print green("Running migrations...")
-        run('python manage.py migrate')
-
-        print green("Gathering and preprocessing static files...")
-        run('python manage.py collectstatic --noinput')
-        run('python manage.py compress')
-
-        print green("Restarting the web process...")
-
-        with hide('output'):
-            run('fab web_refresh')
-
-        print green("Deployment complete!")
+    
+    git_pull()
+    install_dependencies()
+    update_app()
+    web_refresh()
+        
+    print green("Deployment complete!")
 
 def _jinja_render_to(template, context, output_file):
     newconf = _jinja_render(template, template_dir='setup/templates', context=context)
@@ -274,13 +310,9 @@ def _jinja_render_to(template, context, output_file):
         
 def gen_nginx_conf(nginx_conf_file='local/nginx.conf'):
     """Generate a sample nginx conf file"""
-    _common_settings()
 
-    import os
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", env.django_settings_module)
-
-    sys.path.append(root_dir)
-    from django.conf import settings
+    settings = _get_settings()
+    
     from datetime import datetime
     nginx_context = {
         'app_name': env.get('app_name', 'my_special_app'),
@@ -293,13 +325,8 @@ def gen_nginx_conf(nginx_conf_file='local/nginx.conf'):
 
 def gen_upstart_conf(upstart_conf_file='local/upstart.conf'):
     """Generate a sample upstart conf file"""
-    _common_settings()
-
-    import os
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', env.django_settings_module)
-
-    sys.path.append(root_dir)
-    from django.conf import settings
+    settings = _get_settings()
+    
     from datetime import datetime
     upstart_context = {
         'upstart_log': '/var/log/%s.upstart.log' % env.app_name,
@@ -336,74 +363,93 @@ def gen_supervisor_conf(conf_file='local/supervisord.conf.tmp'):
     # Back up first
     _backup_file(conf_file)
 
-    local('python manage.py supervisor getconfig > %s' % conf_file)
+    env.run('python manage.py supervisor getconfig > %s' % conf_file)
     print green("Wrote supervisor conf file to %s" % conf_file)
 
 def _web_pid():
     """Get the pid of the web process"""
     with quiet():
-        local('python manage.py supervisor getconfig > local/.tmpsupervisord.conf')
-        pid = local('supervisorctl -c local/.tmpsupervisord.conf pid web', capture=True)
-        local('rm local/.tmpsupervisord.conf')
-        return pid
+        with virtualenv():
+            env.run('python manage.py supervisor getconfig > local/.tmpsupervisord.conf')
+            pid = env.run('supervisorctl -c local/.tmpsupervisord.conf pid web', capture=True)
+            env.run('rm local/.tmpsupervisord.conf')
+            return pid
 
 def status():
     """Get the status of supervisor processes"""
     with hide('running'):
-        local('python manage.py supervisor getconfig > local/.tmpsupervisord.conf')
-        local('supervisorctl -c local/.tmpsupervisord.conf status')
-        local('rm local/.tmpsupervisord.conf')
+        with virtualenv():
+            env.run('python manage.py supervisor getconfig > local/.tmpsupervisord.conf')
+            env.run('supervisorctl -c local/.tmpsupervisord.conf status')
+            env.run('rm local/.tmpsupervisord.conf')
 
 def web_refresh():
     """Trigger Gunicorn's 'hot refresh' feature."""
-    with lcd(root_dir):
+    if env.django_settings_module == 'dsechat.settings.production':
+        print green("Refreshing the web server...")    
         pid = _web_pid()
-        local('kill -HUP %s' % pid)
+        env.run('kill -HUP %s' % pid)
 
 def web_restart():
     """Hard restart Gunicorn"""
-    local('python manage.py supervisor restart web')
+    env.run('python manage.py supervisor restart web')
 
 def web_count():
     """Get the current gunicorn web worker count"""
-    with lcd(root_dir):
-        with hide('running'):
-            count = int(local('ps -C gunicorn --no-headers | wc -l', capture=True))
 
-        if count > 0:
-            count -= 1
+    with hide('running'):
+        count = int(local('ps -C gunicorn --no-headers | wc -l', capture=True))
 
-        if count == 1:
-            print ("There is %d gunicorn worker running" % count)
-        else:
-            print ("There are %d gunicorn workers running" % count)
+    if count > 0:
+        count -= 1
 
-        return count
+    if count == 1:
+        print ("There is %d gunicorn worker running" % count)
+    else:
+        print ("There are %d gunicorn workers running" % count)
+
+    return count
 
 
 def web_scale(direction='up'):
     """Scale up or down the gunicorn web workers"""
-    with lcd(root_dir):
 
-        before = web_count()
+    before = web_count()
+    pid = _web_pid()
 
-        with hide('running'):
-            pid = _web_pid()
+    if direction == 'up':
+        print ("Scaling up gunicorn workers for master pid %s..." % pid)
+        local('kill -TTIN %s' % pid)
+    elif direction == 'down':
+        if before > 1:
+            print ("Scaling down gunicorn workers for master pid %s..." % pid)
+            local('kill -TTOU %s' % pid)
+        else:
+            print ("There is only one web worker running. Use fab stop:web to kill gunicorn.")
+            return
+    else:
+        raise Exception("Direction argument must be 'up' or 'down'")
 
-            if direction == 'up':
-                print ("Scaling up gunicorn workers for master pid %s..." % pid)
-                local('kill -TTIN %s' % pid)
-            elif direction == 'down':
-                if before > 1:
-                    print ("Scaling down gunicorn workers for master pid %s..." % pid)
-                    local('kill -TTOU %s' % pid)
-                else:
-                    print ("There is only one web worker running. Use fab stop:web to kill gunicorn.")
-                    return
-            else:
-                raise Exception("Direction argument must be 'up' or 'down'")
-        import time
-        time.sleep(1)
-        count = web_count()
-        if count == before:
-            print ("Changes may not be immediately reflected. Check 'fab web_count' in a moment.")
+    import time
+    time.sleep(1)
+    count = web_count()
+    if count == before:
+        print ("Changes may not be immediately reflected. Check 'fab web_count' in a moment.")
+
+def _target_local():
+    package = _read_package()
+    settings = _get_settings()
+    
+    env.app_name = package['name']
+    env.repo_url = package['repository']
+    
+    env.run = local
+    env.machine_target = 'local'
+
+    if env.django_settings_module == 'dsechat.settings.production':
+        env.pip_requirements = ('requirements/PRODUCTION',)
+    else:
+        env.pip_requirements = ('requirements/DEVELOPMENT',)
+    
+# default to local run
+_target_local()
