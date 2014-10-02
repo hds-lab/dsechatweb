@@ -260,6 +260,18 @@ def staging():
 
         print green("Deployment complete!")
 
+def _jinja_render_to(template, context, output_file):
+    newconf = _jinja_render(template, template_dir='setup/templates', context=context)
+
+    # Back up first
+    _backup_file(output_file)
+
+    with open(output_file, 'w') as outfile:
+        outfile.write(newconf)
+
+    print green("Created %s" % output_file)
+
+        
 def gen_nginx_conf(nginx_conf_file='local/nginx.conf'):
     """Generate a sample nginx conf file"""
     _common_settings()
@@ -276,16 +288,8 @@ def gen_nginx_conf(nginx_conf_file='local/nginx.conf'):
         'settings': settings,
     }
 
-    newconf = _jinja_render('nginx.conf', template_dir='setup/templates', context=nginx_context)
-
-    # Back up first
-    _backup_file(nginx_conf_file)
-
-    with open(nginx_conf_file, 'w') as outfile:
-        outfile.write(newconf)
-
-    print green("Created a sample nginx conf file at %s" % nginx_conf_file)
-
+    _jinja_render_to('nginx.conf', context=nginx_context, output_file=nginx_conf_file)
+    
 
 def gen_upstart_conf(upstart_conf_file='local/upstart.conf'):
     """Generate a sample upstart conf file"""
@@ -304,28 +308,22 @@ def gen_upstart_conf(upstart_conf_file='local/upstart.conf'):
         'generated_time': datetime.now(),
         'settings': settings,
     }
-
-    newconf = _jinja_render('upstart.conf', template_dir='setup/templates', context=upstart_context)
-
-    # Back up first
-    _backup_file(upstart_conf_file)
-
-    with open(upstart_conf_file, 'w') as outfile:
-        outfile.write(newconf)
-
-    print green("Created a sample upstart init file at %s" % upstart_conf_file)
+    _jinja_render_to('upstart.conf', context=upstart_context, output=upstart_conf_file)
+    
 
 def gen_dot_env(dot_env_file='local/.env'):
     """Generates a .env file"""
     import base64
     from datetime import datetime
     env_context = {
-        'django_settings_module': env.get('django_settings_module', 'dsechat.settings.development'),
-        'app_name': env.get('app_name', 'something'),
+        'django_settings_module': env.get('django_settings_module', 'dsechat.settings.production'),
+        'app_name': env.get('app_name', 'dsechatweb'),
         'secret_key': base64.b64encode(os.urandom(24)),
         'generated_time': datetime.now(),
     }
 
+    _jinja_render_to('upstart.conf', context=upstart_context, output=upstart_conf_file)
+    
     files.upload_template('dot_env.txt', dot_env_file,
                           context=env_context, use_jinja=True, template_dir='setup/templates',
                           mode=0600) # make it secret
