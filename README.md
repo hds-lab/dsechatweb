@@ -4,7 +4,12 @@ chat.data.uw.edu
 
 ## Installation and configuration
 
-1.  Install Python, virtualenv and npm.
+1.  Install system-level packages that we need:
+    - Python 2.7 with pip and virtualenv
+    - Node.js v0.10
+    - MySQL 5.5 
+    - Nginx or some other web server
+    
 
 2.  Make, enter and activate a virtualenv.
 

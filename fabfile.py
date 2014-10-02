@@ -214,7 +214,8 @@ def install():
         with hide('output'):
             run('git clone %(repo_url)s %(target_directory)s' % env)
 
-    _install_dependencies()
+    with prefix('workon %(app_name)s' % env):
+        _install_dependencies()
 
     dot_env_file = env.target_directory + '/.env'
     if _no_file_or_backed_up(dot_env_file):
