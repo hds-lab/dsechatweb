@@ -53,6 +53,7 @@ GUNICORN_ACCESS_LOG = SITE_DIR / 'local' / 'gunicorn.access.log'
 ##################################################################
 
 SUPERVISOR_LOG=SITE_DIR / 'local' / 'supervisord.log'
+SUPERVISOR_PIDFILE=SITE_DIR / 'local' / 'supervisord.pid'
 # SUPERVISOR_LOG_MAXBYTES=
 # SUPERVISOR_LOG_BACKUPS=
 
