@@ -17,6 +17,10 @@ DATABASES = {
 ########## SECRET CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 SECRET_KEY = environ.get('SECRET_KEY', SECRET_KEY)
+
+if environ.get("HTTPS", "off").lower() in ['true', '1', 'on']:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 ########## END SECRET CONFIGURATION
 
 
