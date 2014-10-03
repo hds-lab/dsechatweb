@@ -126,8 +126,17 @@ STATICFILES_FINDERS = (
 # Compressor settings
 ##################################################################
 
+def _find_lessc():
+    p = SITE_DIR / 'node_modules' / '.bin' / 'lessc'
+    if p.exists():
+        return p
+    p = SITE_DIR / 'node_modules' / 'less' / 'bin' / 'lessc'
+    if p.exists():
+        return p
+    return 'lessc'
+
 COMPRESS_PRECOMPILERS = (
-    ('text/less', (SITE_DIR / 'node_modules/less/bin/lessc') + ' {infile} {outfile}'),
+    ('text/less', (_find_lessc()) + ' {infile} {outfile}'),
 )
 
 ##################################################################
