@@ -27,6 +27,23 @@
 //Use same hue for input field focus
 @input-border-focus: lighten(@navbar-default-bg, 10%);
 
+@border-radius-base:        2px;
+@border-radius-large:       4px;
+@border-radius-small:       0px;
+
+.input-lg {
+    // override the large border radius
+    border-radius: @border-radius-base;
+}
+
+
+.alert {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 600px;
+    .box-shadow(2px 2px 5px rgba(0, 0, 0, 0.05));
+}
+
 .header-shadow() {
     text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }

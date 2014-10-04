@@ -121,19 +121,9 @@ class PasswordResetView(auth_cbv.PasswordResetView):
     success_url = reverse_lazy('accounts:login')
 
     def form_valid(self, form):
-        opts = {
-            'use_https': self.request.is_secure(),
-            'token_generator': self.token_generator,
-            'from_email': self.from_email,
-            'email_template_name': self.email_template_name,
-            'subject_template_name': self.subject_template_name,
-            'request': self.request,
-        }
-        if self.is_admin_site:
-            opts['domain_override'] = self.request.META['HTTP_HOST']
-        form.save(**opts)
+        response = super(PasswordResetView, self).form_valid(form)
         messages.success(self.request, "An email has been sent with a link to choose a new password.")
-        return super(PasswordResetView, self).form_valid(form)
+        return response
 
 
 # Doesn't need csrf_protect since no-one can guess the URL

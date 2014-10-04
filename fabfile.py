@@ -298,9 +298,9 @@ def staging():
     git_pull()
     depends()
     update_app()
-    web_refresh()
 
-    print green("Deployment complete!")
+    print green("Staging complete! Run 'fab web_refresh' or 'web_restart' to restart the server.")
+
 
 def _jinja_render_to(template, context, output):
 

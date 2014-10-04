@@ -22,7 +22,7 @@
 
         {% compress css %}
             <!-- Site CSS -->
-            <link rel="stylesheet" href="{% static 'css/registration_form.css' %}"/>
+            <link rel="stylesheet" href="{% static 'css/forms.css' %}"/>
             <link rel="stylesheet" href="{% static 'css/user_profile.css' %}"/>
             <link rel="stylesheet" href="{% static 'css/home_page.less' %}" type="text/less"/>
             <link rel="stylesheet" href="{% static 'css/research_page.css' %}"/>
@@ -79,13 +79,14 @@
         </div>
     </div>
 
-    {# Display django.contrib.messages as Bootstrap alerts #}
-    {% bootstrap_messages %}
+    <div class="container interior">
+        {# Display django.contrib.messages as Bootstrap alerts #}
+        {% bootstrap_messages %}
+    </div>
 
     <div class="content">
         {% block content %}{% endblock %}
     </div>
-
 </div>
 
 <div class="footer">

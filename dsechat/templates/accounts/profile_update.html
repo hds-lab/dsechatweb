@@ -15,11 +15,11 @@
                         {% csrf_token %}
 
                         <div class="form-group row">
-                            <div class="col-xs-6 form-left-col">
+                            <div class="col-sm-6 form-left-col">
                                 {{ form.first_name.label_tag }}
                                 {% include 'snippets/field_input.html' with field=form.first_name %}
                             </div>
-                            <div class="col-xs-6 form-right-col">
+                            <div class="col-sm-6 form-right-col">
                                 {{ form.last_name.label_tag }}
                                 {% include 'snippets/field_input.html' with field=form.last_name %}
                             </div>

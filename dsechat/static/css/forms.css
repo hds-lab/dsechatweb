@@ -1,6 +1,6 @@
 
 .focus-form-wrapper .form-control {
-    border-radius: 2px;
+    /*border-radius: 2px;*/
 }
 
 .focus-form-wrapper .form-left-col {
@@ -15,8 +15,8 @@
     margin-bottom: 0;
 }
 
-.focus-form-wrapper .btn {
-    margin: 5px 0;
+.focus-form-wrapper form .btn {
+    margin: 5px 5px 0 0;
 }
 
 @media (min-width: 768px) {
