@@ -1,17 +1,38 @@
+.user-profile.focus-form-wrapper {
+    max-width: 600px;
+}
+
 .user-profile .row {
     margin-bottom: 10px;
 }
 
 .quick-buttons {
     margin-bottom: 20px;
-    text-align: center;
 }
 
 .quick-buttons .btn {
-    width: 300px;
-    height: 120px;
-    line-height: 120px;
-    font-size: 24px;
     padding: 0;
-    margin: 10px;
+    margin: 10px 0;
+    display: block;
+
+    font-size: 20px;
+    line-height: 60px;
+    height: 60px;
+}
+
+@media (min-width: 768px) {
+    .quick-buttons .btn {
+        display: inline-block;
+        width: 288px;
+        height: 120px;
+        line-height: 120px;
+        font-size: 24px;
+    }
+
+    .quick-buttons .btn:first-child {
+        margin-right: 10px;
+    }
+    .quick-buttons .btn:last-child {
+        margin-left: 10px;
+    }
 }

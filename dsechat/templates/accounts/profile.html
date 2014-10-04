@@ -2,20 +2,19 @@
 {% load bootstrap3 %}
 {% block content %}
     <div class="container interior">
-        <div class="user-profile">
+        <div class="user-profile focus-form-wrapper">
             <h1 class="page-header">
                 Welcome, {{ object.first_name }}!
             </h1>
 
-            <p class="quick-buttons">
+            <div class="quick-buttons">
                 <a class="btn btn-default"
                    href="{% url 'web:chat' %}"
                    role="button">Chat in your browser</a>
-
                 <a class="btn btn-default"
                    href="{% url 'web:setup' %}"
                    role="button">Set up a desktop client</a>
-            </p>
+            </div>
 
             <div class="panel panel-default">
                 <div class="panel-heading">
