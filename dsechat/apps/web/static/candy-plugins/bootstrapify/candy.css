@@ -66,14 +66,15 @@ ul {
 }
 
 #chat-tabs .transition {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 0;
-    width: 35px;
-    height: 30px;
-    background: url(img/tab-transitions.png) repeat-y left;
-    border-radius: 0 3px 0 0;
+    display: none;
+    /*position: absolute;*/
+    /*top: 0;*/
+    /*right: 0;*/
+    /*padding: 0;*/
+    /*width: 35px;*/
+    /*height: 30px;*/
+    /*background: url(../../vendor/bower/candy/res/img/tab-transitions.png) repeat-y left;*/
+    /*border-radius: 0 3px 0 0;*/
 }
 
 #chat-tabs a.close {
@@ -88,7 +89,7 @@ ul {
 }
 
 #chat-tabs .active .transition {
-    background: url(img/tab-transitions.png) repeat-y -50px;
+    background: url(../../vendor/bower/candy/res/img/tab-transitions.png) repeat-y -50px;
 }
 
 #chat-tabs .close:hover {
@@ -112,13 +113,13 @@ ul {
 }
 
 #chat-toolbar {
-    position: fixed;
+    position: absolute;
     bottom: 0;
     right: 0;
     font-size: 11px;
     color: #666;
     width: 200px;
-    height: 24px;
+    height: 32px;
     padding-top: 7px;
     background-color: #444;
     display: none;
@@ -138,11 +139,11 @@ ul {
 }
 
 #chat-toolbar #emoticons-icon {
-    background-image: url(img/action/emoticons.png);
+    background-image: url(../../vendor/bower/candy/res/img/action/emoticons.png);
 }
 
 #chat-toolbar .context {
-    background-image: url(img/action/settings.png);
+    background-image: url(../../vendor/bower/candy/res/img/action/settings.png);
     display: none;
 }
 
@@ -151,31 +152,31 @@ ul {
 }
 
 #chat-sound-control {
-    background-image: url(img/action/sound-off.png);
+    background-image: url(../../vendor/bower/candy/res/img/action/sound-off.png);
 }
 
 #chat-sound-control.checked {
-    background-image: url(img/action/sound-on.png);
+    background-image: url(../../vendor/bower/candy/res/img/action/sound-on.png);
 }
 
 #chat-autoscroll-control {
-    background-image: url(img/action/autoscroll-off.png);
+    background-image: url(../../vendor/bower/candy/res/img/action/autoscroll-off.png);
 }
 
 #chat-autoscroll-control.checked {
-    background-image: url(img/action/autoscroll-on.png);
+    background-image: url(../../vendor/bower/candy/res/img/action/autoscroll-on.png);
 }
 
 #chat-statusmessage-control {
-    background: url(img/action/statusmessage-off.png);
+    background: url(../../vendor/bower/candy/res/img/action/statusmessage-off.png);
 }
 
 #chat-statusmessage-control.checked {
-    background: url(img/action/statusmessage-on.png);
+    background: url(../../vendor/bower/candy/res/img/action/statusmessage-on.png);
 }
 
 #chat-toolbar .usercount {
-    background-image: url(img/action/usercount.png);
+    background-image: url(../../vendor/bower/candy/res/img/action/usercount.png);
     cursor: default;
     padding-left: 20px;
     width: auto;
@@ -245,6 +246,12 @@ ul {
     overflow: hidden;
     white-space: nowrap;
     text-shadow: 1px 1px black;
+
+    font-size: 100%;
+    line-height: 1.428;
+    color:#ccc;
+    text-align: left;
+    padding: 0;
 }
 
 .roster-pane li {
@@ -263,17 +270,17 @@ ul {
 }
 
 .roster-pane li.role-moderator {
-    background-image: url(img/roster/role-moderator.png);
+    background-image: url(../../vendor/bower/candy/res/img/roster/role-moderator.png);
     display: block;
 }
 
 .roster-pane li.affiliation-owner {
-    background-image: url(img/roster/affiliation-owner.png);
+    background-image: url(../../vendor/bower/candy/res/img/roster/affiliation-owner.png);
     display: block;
 }
 
 .roster-pane li.ignore {
-    background-image: url(img/roster/ignore.png);
+    background-image: url(../../vendor/bower/candy/res/img/roster/ignore.png);
     display: none;
 }
 
@@ -404,7 +411,7 @@ ul {
 }
 
 .message-form-wrapper {
-    position: fixed;
+    position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
@@ -416,11 +423,10 @@ ul {
 }
 
 .message-form {
-    position: fixed;
+    position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    margin-right: 320px;
     padding: 0;
 }
 
@@ -438,10 +444,10 @@ ul {
     cursor: pointer;
     background-color: #ccc;
     color: #666;
-    position: fixed;
+    position: absolute;
     bottom: 0;
     right: 0;
-    margin: 3px 203px 3px 3px;
+    margin: 3px 3px 3px 3px;
     padding: 5px 7px;
     width: auto;
     font-size: 12px;
@@ -469,7 +475,7 @@ ul {
 }
 
 .arrow {
-    background: url(img/tooltip-arrows.gif) no-repeat left bottom;
+    background: url(../../vendor/bower/candy/res/img/tooltip-arrows.gif) no-repeat left bottom;
     height: 5px;
     display: block;
     position: relative;
@@ -535,27 +541,27 @@ ul {
 }
 
 #context-menu .private {
-    background-image: url(img/action/private.png);
+    background-image: url(../../vendor/bower/candy/res/img/action/private.png);
 }
 
 #context-menu .ignore {
-    background-image: url(img/action/ignore.png);
+    background-image: url(../../vendor/bower/candy/res/img/action/ignore.png);
 }
 
 #context-menu .unignore {
-    background-image: url(img/action/unignore.png);
+    background-image: url(../../vendor/bower/candy/res/img/action/unignore.png);
 }
 
 #context-menu .kick {
-    background-image: url(img/action/kick.png);
+    background-image: url(../../vendor/bower/candy/res/img/action/kick.png);
 }
 
 #context-menu .ban {
-    background-image: url(img/action/ban.png);
+    background-image: url(../../vendor/bower/candy/res/img/action/ban.png);
 }
 
 #context-menu .subject {
-    background-image: url(img/action/subject.png);
+    background-image: url(../../vendor/bower/candy/res/img/action/subject.png);
 }
 
 #context-menu .emoticons {
