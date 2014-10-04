@@ -9,3 +9,4 @@ from django.contrib.auth.models import AbstractUser
 class User(AbstractUser):
     over18 = models.BooleanField(default=False)
     gives_consent = models.BooleanField(default=False)
+
