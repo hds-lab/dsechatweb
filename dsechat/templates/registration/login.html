@@ -2,40 +2,40 @@
 {% load bootstrap3 %}
 
 {% block content %}
+    <div class="container interior">
+        <div class="focus-form-wrapper">
 
-    <div class="focus-form-wrapper">
+            <h1 class="page-header">Sign in to your account</h1>
 
-        <h1 class="page-header">Sign in to your profile</h1>
+            <div class="panel panel-default">
+                <div class="panel-body">
 
-        <div class="panel panel-default">
-            <div class="panel-body">
+                    <form role="form"
+                          action="{% url 'accounts:login' %}"
+                          method="post">
+                        {% csrf_token %}
 
-                <form role="form"
-                      action="{% url 'accounts:login' %}"
-                      method="post">
-                    {% csrf_token %}
-
-                    <div class="form-group row">
-                        <div class="col-sm-6 form-left-col">
-                            {% include 'snippets/field_input.html' with field=form.username %}
+                        <div class="form-group row">
+                            <div class="col-sm-6 form-left-col">
+                                {% include 'snippets/field_input.html' with field=form.username %}
+                            </div>
+                            <div class="col-sm-6 form-right-col">
+                                {% include 'snippets/field_input.html' with field=form.password type='password' %}
+                            </div>
                         </div>
-                        <div class="col-sm-6 form-right-col">
-                            {% include 'snippets/field_input.html' with field=form.password type='password' %}
-                        </div>
-                    </div>
 
-                    {% bootstrap_form_errors form %}
+                        {% bootstrap_form_errors form %}
 
-                    {% buttons %}
-                        <button type="submit" class="btn btn-primary btn-lg">Sign in</button>
-                        <a class="form-alt-link"
-                           href="{% url 'accounts:registration_register' %}">Create an account</a>
-                        <a class="form-alt-link"
-                           href="{% url 'accounts:password_reset' %}">I forgot my password</a>
-                    {% endbuttons %}
-                </form>
+                        {% buttons %}
+                            <button type="submit" class="btn btn-primary btn-lg">Sign in</button>
+                            <a class="form-alt-link"
+                               href="{% url 'accounts:registration_register' %}">Create an account</a>
+                            <a class="form-alt-link"
+                               href="{% url 'accounts:password_reset' %}">I forgot my password</a>
+                        {% endbuttons %}
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-
 {% endblock %}

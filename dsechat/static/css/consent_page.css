@@ -10,7 +10,7 @@
 }
 
 .consent-form .panel-body {
-    max-height: 400px;
+    max-height: 368px;
     overflow-y: auto;
     -webkit-box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.1);
     -moz-box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.1);

@@ -1,0 +1,132 @@
+@import '../vendor/bower/bootstrap/less/bootstrap.less';
+
+@font-family-sans-serif:  "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+@jumbotron-bg: #a0bac5;
+
+@navbar-default-color: #FFF;
+@navbar-default-bg: #44c8f2;
+
+@navbar-default-link-color: #FFF;
+@navbar-default-link-hover-color: @navbar-default-link-color;
+@navbar-default-link-hover-bg: darken(@navbar-default-bg, 3.5%);
+
+@navbar-default-link-active-color: @navbar-default-link-color;
+
+// Make the brand link act like normal links
+@navbar-default-brand-hover-color: @navbar-default-link-color;
+@navbar-default-brand-hover-bg: @navbar-default-link-hover-bg;
+
+@navbar-default-toggle-hover-bg:           darken(@navbar-default-bg, 6.5%);
+@navbar-default-toggle-icon-bar-bg:        lighten(@navbar-default-bg, 20%);
+@navbar-default-toggle-border-color:       @navbar-default-toggle-hover-bg;
+
+//Lighter text
+@text-color: @gray;
+@link-color: #0071BC;
+
+//Use same hue for input field focus
+@input-border-focus: lighten(@navbar-default-bg, 10%);
+
+.header-shadow() {
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 60px;
+    background-color: @navbar-default-bg;
+    z-index: 1030;
+}
+
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+
+.container {
+    max-width: 970px;
+}
+
+body > .container {
+    /* 70px for the fixed navbar */
+    padding: 70px 15px 0;
+}
+
+@import 'wide_banner.less';
+//@import 'narrow_banner.less';
+
+
+.footer > .container {
+    padding-right: 15px;
+    padding-left: 15px;
+    position: relative;
+}
+
+
+.anchor {
+    /* offset to account for fixed header */
+    /* http://stackoverflow.com/questions/10732690/offsetting-an-html-anchor-to-adjust-for-fixed-header */
+    display: block;
+    position: relative;
+    top: -70px;
+    visibility: hidden;
+}
+
+.navbar-brand {
+    .header-shadow();
+}
+
+.navbar-nav > li > a {
+    .header-shadow();
+}
+
+/* Footer nav bar ish thing */
+.footer-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    > li {
+        float: left;
+        position: relative;
+        display: block;
+
+        > a {
+            color: @navbar-default-color;
+            line-height: 20px;
+            position: relative;
+            display: block;
+            padding: 20px 15px;
+            .header-shadow();
+        }
+    }
+}
+
+.footer .navbar-text {
+    color: @navbar-default-color;
+    float: none;
+    margin: 20px 0;
+    position: absolute;
+    left: 15px;
+    right: 160px;
+    top: 0;
+    padding-left: 4px;
+    .text-overflow();
+    .header-shadow();
+}
+

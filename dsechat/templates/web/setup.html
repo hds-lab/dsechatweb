@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 {% block content %}
-
+    <div class="container interior">
     <h1 class="page-header">Chat Client Configuration</h1>
 
     <p class="lead">You can connect to the data science chat room using any client that supports XMPP.</p>
@@ -29,6 +29,7 @@
 
     <div class="client-instructions">
         <a id="pidgin" class="anchor"></a>
+
         <div class="media">
             <a class="pull-left" href="http://pidgin.im/">
                 <img class="media-object client-logo" src="{% static 'img/pidgin.logo.png' %}" alt="Pidgin logo">
@@ -144,6 +145,7 @@
 
     <div class="client-instructions">
         <a id="adium" class="anchor"></a>
+
         <div class="media">
             <a class="pull-left" href="https://adium.im/">
                 <img class="media-object client-logo" src="{% static 'img/adium.logo.png' %}" alt="Adium logo">
@@ -163,6 +165,7 @@
 
     <div class="client-instructions">
         <a id="other" class="anchor"></a>
+
         <div class="media">
             <a class="pull-left" href="http://xmpp.org/xmpp-software/clients/">
                 <img class="media-object client-logo" src="{% static 'img/xmpp.logo.png' %}" alt="XMPP logo">
@@ -209,5 +212,5 @@
             </div>
         </div>
     </div>
-
+    </div>
 {% endblock %}

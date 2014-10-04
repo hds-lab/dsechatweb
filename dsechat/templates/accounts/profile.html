@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% block content %}
+    <div class="container interior">
+        <div class="user-profile">
+            <h1 class="page-header">
+                Welcome, {{ object.first_name }}!
+            </h1>
+
+            <p class="quick-buttons">
+                <a class="btn btn-default"
+                   href="{% url 'web:chat' %}"
+                   role="button">Chat in your browser</a>
+
+                <a class="btn btn-default"
+                   href="{% url 'web:setup' %}"
+                   role="button">Set up a desktop client</a>
+            </p>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a href="{% url 'accounts:profile_update' %}" class="btn btn-default pull-right">Edit Profile</a>
+                    <h4>Your Profile</h4>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <label class="col-sm-2">Username:</label>
+
+                        <div class="col-sm-10">{{ object.username }}</div>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-2">Password:</label>
+
+                        <div class="col-sm-10">
+                            <a class="field-change-link" href="{% url 'accounts:password_change' %}">Change</a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-2">Name:</label>
+
+                        <div class="col-sm-10">
+                            {{ object.first_name }} {{ object.last_name }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <label class="col-sm-2">Email:</label>
+
+                        <div class="col-sm-10">{{ object.email }}</div>
+                    </div>
+
+                    <div class="row">
+                        <label class="col-sm-2">Research consent status:</label>
+
+                        <div class="col-sm-10">
+                            {% if object.gives_consent %}
+                                <span class="label label-success">Participating</span>
+                                <div class="help-text text-muted">
+                                    Your messages may be used to learn about how chat supports collaboration.
+                                    <a class="field-change-link" href="{% url 'web:consent_info' %}">
+                                        Review study info
+                                    </a>.
+                                    <br/>
+                                    If you would like to withdraw from the study, please
+                                    <a href="{% url 'web:contact' %}">contact us</a>.
+                                </div>
+
+                            {% else %}
+                                <span class="label label-default">Not Participating</span>
+                                <a class="field-change-link" href="{% url 'accounts:consent' %}">Change</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container interior">
+        <div class="focus-form-wrapper">
+            <h1 class="page-header">Contact Us</h1>
+
+            <p class="lead">
+                For questions about our research on the data science chat room,
+                contact <strong>{{ study_contact_name }}</strong> at
+                <a href="mailto:{{ study_contact_email }}">{{ study_contact_email }}</a>.
+                <br/>
+                We cannot guarantee the confidentiality of information sent by email.
+            </p>
+
+            <p class="lead">
+                For all other questions, contact <a href="mailto:{{ site_contact_email }}">{{ site_contact_email }}</a>.
+            </p>
+        </div>
+    </div>
+{% endblock %}

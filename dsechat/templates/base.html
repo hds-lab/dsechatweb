@@ -10,19 +10,21 @@
     <link rel="shortcut icon" href="{% static 'favicon.ico' %}">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
+    <!-- Load Source Sans Pro font -->
+    <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic' rel='stylesheet' type='text/css'/>
+
     {% block page_css %}
         {% compress css %}
             <!-- Vendor css -->
-            <link rel="stylesheet" href="{% static 'vendor/bower/bootstrap/dist/css/bootstrap.css' %}"/>
+            <link rel="stylesheet" href="{% static 'css/bootstrap_theme.less' %}" type="text/less"/>
             <link rel="stylesheet" href="{% static 'vendor/bower/ie10-viewport-fix/ie10-viewport-fix.css' %}"/>
         {% endcompress %}
 
         {% compress css %}
             <!-- Site CSS -->
-            <link rel="stylesheet" href="{% static 'css/sticky_footer_fixed_navbar.css' %}"/>
             <link rel="stylesheet" href="{% static 'css/registration_form.css' %}"/>
             <link rel="stylesheet" href="{% static 'css/user_profile.css' %}"/>
-            <link rel="stylesheet" href="{% static 'css/home_page.css' %}"/>
+            <link rel="stylesheet" href="{% static 'css/home_page.less' %}" type="text/less"/>
             <link rel="stylesheet" href="{% static 'css/research_page.css' %}"/>
             <link rel="stylesheet" href="{% static 'css/setup_page.css' %}"/>
             <link rel="stylesheet" href="{% static 'css/consent_page.css' %}"/>
@@ -101,8 +103,6 @@
 
     {% compress js %}
         <!-- Vendor JS -->
-        <script src="{% static 'vendor/bower/underscore/underscore.js' %}"></script>
-        <script src="{% static 'vendor/bower/backbone/backbone.js' %}"></script>
         <script src="{% static 'vendor/bower/bootstrap/dist/js/bootstrap.js' %}"></script>
         <script src="{% static 'vendor/bower/wp8-ie10-fix/wp8-ie10-fix.js' %}"></script>
     {% endcompress %}
