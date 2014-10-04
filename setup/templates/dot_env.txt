@@ -10,6 +10,8 @@ PORT=8000
 
 # You can turn on https in production
 #HTTPS=on
+# Only enable this if you are behind a proxy server
+#USE_HTTP_X_FORWARDED_PROTOCOL=on
 
 # GUNICORN_WORKERS=2
 # STATIC_ROOT=/some/directory/staticfiles/

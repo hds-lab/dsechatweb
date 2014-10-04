@@ -21,6 +21,10 @@ SECRET_KEY = environ.get('SECRET_KEY', SECRET_KEY)
 if environ.get("HTTPS", "off").lower() in ['true', '1', 'on']:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+
+if environ.get("USE_HTTP_X_FORWARDED_PROTOCOL", 'off').lower() in ['true', '1', 'on']:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
+
 ########## END SECRET CONFIGURATION
 
 
