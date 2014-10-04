@@ -195,7 +195,10 @@ def depends():
             env.run('pip install -r %s' % req)
 
         print green("Installing node.js requirements...")
-        env.run('npm install --no-bin-link')
+        if env.machine_target == 'vagrant' or os.name == 'nt':
+            env.run('npm install --no-bin-link')
+        else:
+            env.run('npm install')
 
         print green("Installing bower requirements...")
         env.run('bower install --config.interactive=false')

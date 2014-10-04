@@ -132,11 +132,11 @@ def _find_lessc():
         return p
     p = SITE_DIR / 'node_modules' / 'less' / 'bin' / 'lessc'
     if p.exists():
-        return p
-    return 'lessc'
+        return "node %s" % p
+    return 'lessc' # global install
 
 COMPRESS_PRECOMPILERS = (
-    ('text/less', (_find_lessc()) + ' {infile} {outfile}'),
+    ('text/less', '%s {infile} {outfile}' % _find_lessc()),
 )
 
 ##################################################################
