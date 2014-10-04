@@ -33,6 +33,35 @@ def _remote(*args, **kwargs):
 _env_already_read = None
 
 
+def _is_git_dirty():
+    """Checks if the local repo has uncommitted changes"""
+
+def _contains(string, options):
+    """Check if the string contains any of the options"""
+    for opt in options:
+        if opt in string:
+            return True
+
+def git_status():
+    """Checks if the local git repo is ahead of the remote"""
+    with quiet():
+        result = local("git status", capture=True).lower()
+
+        if _contains(result, ("untracked files",)):
+            print yellow("Your git repo has untracked files that are being ignored.")
+
+        if _contains(result, ("deleted:", "added:", "modified:", "renamed:")):
+            print red("Your git repo has uncommitted changes.")
+            return "dirty"
+
+        if _contains(result, ("your branch is ahead",)):
+            print red("Your git repo is ahead of the remote.")
+            return "ahead"
+
+        if _contains(result, ("nothing to commit",)):
+            print green("Your git repo seems to be syncronized.")
+            return "clean"
+
 def _read_env():
     global _env_already_read
 
