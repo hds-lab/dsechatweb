@@ -341,6 +341,11 @@ def staging():
 
     print green("Staging complete! Run 'fab web_refresh' or 'web_restart' to restart the server.")
 
+def deploy_prod():
+    """Shortcut for 'target_production staging web_refresh'"""
+    target_production()
+    staging()
+    web_refresh()
 
 def _jinja_render_to(template, context, output):
 
