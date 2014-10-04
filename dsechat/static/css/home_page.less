@@ -1,10 +1,18 @@
+@import '../vendor/bower/bootstrap/less/mixins.less';
+@import 'variables.less';
+
 .marketing h4 {
     margin-top: 20px;
 }
 
+.simple-button(@color; @background; @border) {
+    color: @color;
+    background-color: @background;
+    border-color: @border;
+}
+
 .container .jumbotron {
     text-align: center;
-    color: #3E5056;
 
     h1 {
         font-weight: lighter;
@@ -15,9 +23,25 @@
 
     }
 
-    .btn {
-        padding: 14px 24px;
+    .btn-action {
+        .button-variant(@jumbotron-color; @jumbotron-bg; @jumbotron-color);
+
+        &:hover,
+        &:focus,
+        &:active,
+        &.active,
+        .open > .dropdown-toggle& {
+            background-color: lighten(@jumbotron-bg, 10%);
+            border-color: darken(@jumbotron-color, 12%);
+        }
+
+        margin-top: 10px;
+        padding: 20px 30px;
         font-size: 21px;
+
+//        &:hover {
+//            .simple-button(@jumbotron-bg; @jumbotron-color; @jumbotron-color);
+//        }
     }
 }
 
