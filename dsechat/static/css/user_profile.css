@@ -20,6 +20,16 @@
     height: 60px;
 }
 
+.quick-buttons .label {
+    font-size: 16px;
+    font-weight: normal;
+    background-color: #B4B4B4;
+}
+
+.quick-buttons .btn br {
+    display: none;
+}
+
 @media (min-width: 768px) {
     .quick-buttons .btn {
         display: inline-block;
@@ -34,5 +44,11 @@
     }
     .quick-buttons .btn:last-child {
         margin-left: 10px;
+        padding-top: 20px;
+        line-height: 33px;
+    }
+
+    .quick-buttons .btn br {
+        display: block;
     }
 }
