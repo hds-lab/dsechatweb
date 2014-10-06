@@ -2,215 +2,99 @@
 {% load staticfiles %}
 {% block content %}
     <div class="container interior">
-    <h1 class="page-header">Chat Client Configuration</h1>
+        <h1 class="page-header">Chat Client Configuration</h1>
 
-    <p class="lead">You can connect to the data science chat room using any client that supports XMPP.</p>
+        <p class="lead">You can connect to the data science chat room using any client that supports XMPP.</p>
 
-    <p>
-        The data science chat room is hosted by an
-        <a href="https://en.wikipedia.org/wiki/XMPP" target="_blank">XMPP/Jabber</a> server.
-        XMPP is an open chat protocol that is supported by a wide range of client programs and services.
-    </p>
+        <p>
+            The data science chat room uses
+            <a href="https://en.wikipedia.org/wiki/XMPP" target="_blank">XMPP/Jabber</a>.
+            XMPP is an open chat protocol that is supported by a wide range of client programs and services.
+        </p>
 
-    <p>
-        We provide instructions for connecting to the data science chat room with Pidgin and Adium, two popular
-        open-source chat programs. However, the setup should be similar if you want to connect with
-        <a href="http://xmpp.org/xmpp-software/clients/" target="_blank">another XMPP client</a>.
-    </p>
+        <p>
+            We provide instructions for connecting to the data science chat room with Pidgin and Adium, two popular
+            open-source chat programs. However, the setup should be similar if you want to connect with
+            <a href="http://xmpp.org/xmpp-software/clients/" target="_blank">another XMPP client</a>.
+        </p>
 
-    <p><strong>Note: Before you can connect, you must have a
-        <a href="{% url 'accounts:registration_register' %}">valid username and password</a>.</strong></p>
+        <p><strong>Note: Before you can connect, you must have a
+            <a href="{% url 'accounts:registration_register' %}">valid username and password</a>.</strong></p>
 
-    <ul>
-        <li><a href="#pidgin">Pidgin (for Windows and Linux)</a></li>
-        <li><a href="#adium">Adium (for Mac OS X)</a></li>
-        <li><a href="#other">Other XMPP clients</a></li>
-    </ul>
-
-    <div class="client-instructions">
-        <a id="pidgin" class="anchor"></a>
-
-        <div class="media">
-            <a class="pull-left" href="http://pidgin.im/">
-                <img class="media-object client-logo" src="{% static 'img/pidgin.logo.png' %}" alt="Pidgin logo">
-            </a>
-
-            <div class="media-body">
-                <h2 class="media-heading">Pidgin Setup</h2>
-
-                <p>
-                    <a href="http://pidgin.im/" target="_blank">Pidgin</a> is a free IM program for Windows and Linux.
-                </p>
-
-                <p>After downloading and installing Pidgin, go through the following steps:</p>
+        <div class="client-options row">
+            <div class="col-sm-2">
+                <p class="lead">Client instructions:</p>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">
-                <h4>1. Add an account</h4>
-
-                <p>If you have just installed Pidgin, you will see the Accounts screen.</p>
-
-                <p>You can also access this screen from <em>Accounts > Manage Accounts</em>.</p>
-
-                <p>Click the <strong>Add...</strong> button to setup your account.</p>
-            </div>
-
-            <div class="col-md-8">
-                <img class="screenshot" src="{% static 'img/pidgin.accounts-screen.png' %}" alt="Accounts screen"/>
+            <div class="col-sm-9">
+                <a href="{% url 'web:setup_pidgin' %}" class="btn btn-lg btn-default">
+                    Pidgin
+                    <p class="small text-muted">Windows and Linux</p>
+                </a>
+                <a href="{% url 'web:setup_adium' %}" class="btn btn-lg btn-default">
+                    Adium
+                    <p class="small text-muted">Mac OS X</p>
+                </a>
+                <a class="btn btn-lg btn-default disabled">
+                    Mobile
+                    <p class="small text-muted">Coming soon!</p>
+                </a>
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-4">
-                <h4>2. Enter your account settings</h4>
+        <div class="other-client-instructions">
+            <a id="other" class="anchor"></a>
 
-                <p>Set the Protocol to <code>XMPP</code>.</p>
+            <div class="media">
+                <a class="pull-left" href="http://xmpp.org/xmpp-software/clients/">
+                    <img class="media-object client-logo" src="{% static 'img/xmpp.logo.png' %}" alt="XMPP logo">
+                </a>
 
-                <p>Enter the Username you created earlier.
+                <div class="media-body">
+                    <h2 class="media-heading">Other XMPP clients</h2>
 
-                <p>
+                    <p>There are many XMPP clients out there. The XMPP Standards Foundation
+                        <a href="http://xmpp.org/xmpp-software/clients/" target="_blank">maintains a list</a>.</p>
 
-                <p>For the Domain, enter <code>{{ xmpp_server }}</code>.</p>
+                    <p>The details below should be sufficient for connecting most clients to the data science chat
+                        room.</p>
 
-                <p>The Resource field is optional.</p>
-
-                <p>Enter the Password for your chat account.</p>
-
-                <p>The User Options are optional.</p>
-
-                <p>Click the <strong>Add</strong> button when you are done.</p>
-            </div>
-
-            <div class="col-md-8">
-                <img class="screenshot" src="{% static 'img/pidgin.add-account-screen.png' %}" alt="Accounts screen"/>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-4">
-                <h4>3. Enable your account</h4>
-
-                <p>Make sure that small checkbox next to your account is checked.</p>
-
-                <p>This will make Pidgin sign in using your username and password.</p>
-
-                <p>You can close the "Modify Accounts" window.</p>
-            </div>
-
-            <div class="col-md-8">
-                <img class="screenshot" src="{% static 'img/pidgin.accounts-enable-screen.png' %}"
-                     alt="Accounts screen"/>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-4">
-                <h4>4. Add the chat room</h4>
-
-                <p>Now you are connected to the chat server, but you still need to join the chat room.</p>
-
-                <p>On the "Buddy List" window, go to <em>Buddies > Add Chat...</em>.</p>
-            </div>
-
-            <div class="col-md-8">
-                <img class="screenshot" src="{% static 'img/pidgin.add-chat-screen.png' %}" alt="Accounts screen"/>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-4">
-                <h4>5. Enter the chat room settings</h4>
-
-                <p>Choose your data science chat account.</p>
-
-                <p>For Room, enter <code>{{ xmpp_muc_room }}</code>.</p>
-
-                <p>For Server, enter <code>{{ xmpp_muc_server }}</code>.
-
-                <p>
-
-                <p>You may use whatever Handle you wish, but we recommend you use your username.</p>
-
-                <p>You may leave the Password field empty.</p>
-
-                <p>Press the <strong>Add</strong> button.</p>
-            </div>
-
-            <div class="col-md-8">
-                <img class="screenshot" src="{% static 'img/pidgin.chat-setup-screen.png' %}" alt="Accounts screen"/>
-            </div>
-        </div>
-    </div>
-
-    <div class="client-instructions">
-        <a id="adium" class="anchor"></a>
-
-        <div class="media">
-            <a class="pull-left" href="https://adium.im/">
-                <img class="media-object client-logo" src="{% static 'img/adium.logo.png' %}" alt="Adium logo">
-            </a>
-
-            <div class="media-body">
-                <h2 class="media-heading">Adium Setup</h2>
-
-                <p><a href="https://adium.im/" target="_blank">Adium</a> is a free IM program for Mac OS X.</p>
-
-                <p class="alert alert-warning">Adium instructions coming soon!</p>
-            </div>
-        </div>
-
-
-    </div>
-
-    <div class="client-instructions">
-        <a id="other" class="anchor"></a>
-
-        <div class="media">
-            <a class="pull-left" href="http://xmpp.org/xmpp-software/clients/">
-                <img class="media-object client-logo" src="{% static 'img/xmpp.logo.png' %}" alt="XMPP logo">
-            </a>
-
-            <div class="media-body">
-                <h2 class="media-heading">Other XMPP clients</h2>
-
-                <p>There are many XMPP clients out there. The XMPP Standards Foundation
-                    <a href="http://xmpp.org/xmpp-software/clients/" target="_blank">maintains a list</a>.</p>
-
-                <p>The details below should be sufficient for connecting most clients to the data science chat room.</p>
-
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        Connection Details
-                    </div>
-                    <div class="panel-body">
-                        <div class="row">
-                            <label class="col-xs-3">XMPP Domain:</label>
-
-                            <div class="col-xs-9"><code>{{ xmpp_server }}</code></div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Connection Details
                         </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <label class="col-xs-3">XMPP Domain:</label>
 
-                        <div class="row">
-                            <label class="col-xs-3">Port number:</label>
+                                <div class="col-xs-9"><code>{{ xmpp_server }}</code></div>
+                            </div>
 
-                            <div class="col-xs-9"><code>{{ xmpp_server_port }}</code></div>
-                        </div>
+                            <div class="row">
+                                <label class="col-xs-3">Port number:</label>
 
-                        <div class="row">
-                            <label class="col-xs-3">Conference Domain:</label>
+                                <div class="col-xs-9">
+                                    <code>{{ xmpp_server_port }}</code>
+                                    {% if xmpp_server_port == 5222 %}
+                                        (Default)
+                                    {% endif %}
+                                </div>
+                            </div>
 
-                            <div class="col-xs-9"><code>{{ xmpp_muc_server }}</code></div>
-                        </div>
+                            <div class="row">
+                                <label class="col-xs-3">Conference Domain:</label>
 
-                        <div class="row">
-                            <label class="col-xs-3">Room Name:</label>
+                                <div class="col-xs-9"><code>{{ xmpp_muc_server }}</code></div>
+                            </div>
 
-                            <div class="col-xs-9"><code>{{ xmpp_muc_room }}</code></div>
+                            <div class="row">
+                                <label class="col-xs-3">Room Name:</label>
+
+                                <div class="col-xs-9"><code>{{ xmpp_muc_room }}</code></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
 {% endblock %}

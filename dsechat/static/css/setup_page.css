@@ -1,14 +1,35 @@
-.client-instructions {
-    margin-top: 30px;
-}
 
-.client-instructions .client-logo {
+.client-logo {
     width: 80px;
     margin-bottom: 20px;
     margin-right: 10px;
+    margin-top: 45px;
 }
 
-.client-instructions .screenshot {
+.other-client-instructions {
+    margin-top: 30px;
+}
+.other-client-instructions .client-logo {
+    margin-top: 0;
+}
+
+.screenshot {
     margin-bottom: 20px;
     max-width: 100%;
+}
+
+.finished-message {
+    margin: 50px 0 50px 0;
+    text-align: center;
+}
+
+.client-options {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.client-options .btn-lg {
+    min-width: 160px;
+    margin-right: 10px;
+    margin-bottom: 10px;
 }

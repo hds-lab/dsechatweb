@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block content %}
+    <div class="container interior">
+        <div class="media">
+            <a class="pull-left" href="http://pidgin.im/">
+                <img class="media-object client-logo" src="{% static 'img/pidgin.logo.png' %}" alt="Pidgin logo">
+            </a>
+
+            <div class="media-body">
+                <h1 class="page-header">Pidgin Configuration</h1>
+
+                <p class="lead">
+                    <a href="http://pidgin.im/" target="_blank">Pidgin</a> is a free IM program for Windows and Linux.
+                </p>
+
+                <p class="lead">
+                    <a href="http://pidgin.im/" target="_blank">Download and install</a>
+                    Pidgin. Then follow the steps below.
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <h4>1. Add an account</h4>
+
+                <p>If you have just installed Pidgin, you will see the Accounts screen (pictured).</p>
+
+                <p>You can also access this screen from <em>Accounts > Manage Accounts</em>.</p>
+
+                <p>Click <strong>Add...</strong> to setup your account.</p>
+            </div>
+
+            <div class="col-md-8">
+                <img class="screenshot" src="{% static 'img/pidgin/pidgin.accounts-screen.png' %}"
+                     alt="Accounts screen"/>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <h4>2. Enter your account information</h4>
+
+                <p>Set the <em>Protocol</em> to <code>XMPP</code>.</p>
+
+                <p>Enter your chat username.</p>
+
+                <p>For the <em>Domain</em>, enter <code>{{ xmpp_server }}</code>.</p>
+
+                <p>Enter your chat account password.</p>
+
+                <p>Click the <strong>Add</strong> button when done.</p>
+            </div>
+
+            <div class="col-md-8">
+                <img class="screenshot" src="{% static 'img/pidgin/pidgin.add-account-screen.png' %}"
+                     alt="Add account screen"/>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <h4>3. Enable your account</h4>
+
+                <p>Make sure that small checkbox next to your account is checked.</p>
+
+                <p>This will make Pidgin sign in using your username and password.</p>
+
+                <p>You can close the <em>Modify Accounts</em> window.</p>
+            </div>
+
+            <div class="col-md-8">
+                <img class="screenshot" src="{% static 'img/pidgin/pidgin.accounts-enable-screen.png' %}"
+                     alt="Enable accounts screen"/>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <h4>4. Find the chat room</h4>
+
+                <p>On the Buddy List window, under the <em>Tools</em> menu, choose <em>Room List</em></p>
+            </div>
+
+            <div class="col-md-8">
+                <img class="screenshot" src="{% static 'img/pidgin/pidgin.room-list-menu.png' %}" alt="Room list menu"/>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <h4>5. Find the chat room</h4>
+
+                <p>
+                    On the <em>Room List</em> window, click <strong>Get List</strong>.
+                </p>
+
+                <p>
+                    The conference server name should be
+                    <code>{{ xmpp_muc_server }}</code>.
+                    Click <strong>Find Rooms</strong>.
+                </p>
+
+                <p>
+                    Click on the <code>{{ xmpp_muc_room }}</code> room, and
+                    then click <strong>Add Chat</strong>.</p>
+
+                <p>You may use whatever Handle you wish, but we recommend you use your username.</p>
+
+                <p>You may leave the Password field empty.</p>
+
+                <p>Press the <strong>Add</strong> button.</p>
+            </div>
+
+            <div class="col-md-8">
+                <img class="screenshot" src="{% static 'img/pidgin/pidgin.room-list.png' %}" alt="Room list"/>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <h4>6. Configure the room</h4>
+
+                <p>
+                    Type your actual name for <em>Handle</em>.
+                    This is how others will see you in the chat room.
+                </p>
+
+                <p>We suggest you check both boxes at the bottom, but the other fields can be ignored.</p>
+
+                <p>Press the <strong>Add</strong> button. Back on the <em>Room List</em> window (above),
+                    click <strong>Join</strong>.</p>
+            </div>
+
+            <div class="col-md-8">
+                <img class="screenshot" src="{% static 'img/pidgin/pidgin.customize-room-screen.png' %}"
+                     alt="Room configuration"/>
+            </div>
+        </div>
+
+        <p class="lead finished-message">
+            You are now connected to the chat room.<br/>
+            You can find the room again in your <em>Buddy List</em>.
+        </p>
+    </div>
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block content %}
+    <div class="container interior">
+        <div class="media">
+            <a class="pull-left" href="https://adium.im/">
+                <img class="media-object client-logo" src="{% static 'img/adium.logo.png' %}" alt="Adium logo">
+            </a>
+
+            <div class="media-body">
+                <h1 class="page-header">Adium Configuration</h1>
+
+                <p class="lead">
+                    <a href="http://pidgin.im/" target="_blank">Adium</a> is a free IM program for Mac OS X.
+                </p>
+
+                <p class="lead">
+                    <a href="https://adium.im/" target="_blank">Download and install</a>
+                    Adium. Then follow the instructions below.
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <h4>1. Add an account</h4>
+
+                <p>If you have just installed Adium, you will see the Setup Assistant screen (pictured).</p>
+
+                <p>You can also add new accounts under <em>Adium > Preferences</em> in the Accounts tab.</p>
+
+                <p>Click <strong>Continue</strong> to setup your account.</p>
+            </div>
+
+            <div class="col-md-8">
+                <img class="screenshot" src="{% static 'img/adium/adium.welcome.png' %}"
+                     alt="Welcome screen"/>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <h4>2. Enter your account information</h4>
+
+                <p>Set the <em>Service</em> to <code>XMPP (Jabber)</code>.</p>
+
+                <p>The Jabber ID should be <code>[username]@{{ xmpp_server }}</code>.</p>
+
+                <p>Enter your chat account password.</p>
+
+                <p>Click the <strong>Continue</strong> button to connect.</p>
+            </div>
+
+            <div class="col-md-8">
+                <img class="screenshot" src="{% static 'img/adium/adium.add-account.png' %}"
+                     alt="Add account screen"/>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <h4>3. Join the chat room</h4>
+
+                <p>
+                    In the menus, go to <em>File > Join Group Chat...</em>.
+                    The <em>Join Chat</em> window (pictured) will appear.
+                </p>
+
+                <p>For <em>Chat Room Name</em> enter {{ xmpp_muc_room }}</p>
+
+                <p>
+                    For <em>Handle</em>, enter your actual name. This is how other people
+                    will see you in the chat room.
+                </p>
+
+                <p>Click <strong>Join</strong> to open the chat room.</p>
+            </div>
+
+            <div class="col-md-8">
+                <img class="screenshot" src="{% static 'img/adium/adium.join-chat.png' %}"
+                     alt="Enable accounts screen"/>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <h4>4. Save the chat room</h4>
+
+                <p>With the chat room open, in the menus go to <em>Contact > Add Group Chat Bookmark</em>.</p>
+
+                <p>In the box that appears, click <strong>Add</strong> to save the room in your Contacts.</p>
+            </div>
+
+            <div class="col-md-8">
+                <img class="screenshot" src="{% static 'img/adium/adium.add-bookmark.png' %}" alt="Save room"/>
+            </div>
+        </div>
+
+        <p class="lead finished-message">
+            You are now connected to the chat room.<br/>
+            You can find the room again in your <em>Contacts</em>.
+        </p>
+    </div>
+{% endblock %}

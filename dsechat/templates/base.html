@@ -57,8 +57,11 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li class="{% ancestor 'web:chat' %}"><a href="{% url 'web:chat' %}">Web Chat</a></li>
-                    <li class="{% ancestor 'web:setup' %}"><a href="{% url 'web:setup' %}">Setup</a></li>
+                    <li class="{% ancestor 'web:setup' %}"><a href="{% url 'web:setup' %}">Client Setup</a></li>
+                    <li class="{% ancestor 'web:chat' %}"><a href="{% url 'web:chat' %}">
+                        Web Chat
+                        <span class="label label-default">BETA</span>
+                    </a></li>
                 </ul>
 
                 <ul class="nav navbar-nav navbar-right">
