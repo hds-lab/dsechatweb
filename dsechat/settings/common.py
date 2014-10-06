@@ -159,7 +159,8 @@ TEMPLATE_LOADERS = (
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'django.contrib.messages.context_processors.messages',
-    'django.contrib.auth.context_processors.auth'
+    'django.contrib.auth.context_processors.auth',
+    'dsechat.context_processors.google_analytics',
 )
 
 ##################################################################
@@ -260,3 +261,5 @@ XMPP_BOSH_URL = environ.get("XMPP_BOSH_URL", '/http-bind/')
 XMPP_SERVER_PORT = int(environ.get("XMPP_SERVER_PORT", 5222))
 XMPP_MUC_ROOM = environ.get("XMPP_MUC_ROOM", 'datascience')
 XMPP_MUC_SERVER = environ.get("XMPP_MUC_SERVER", 'conference.%s' % XMPP_SERVER)
+
+GA_TRACKING_ID = environ.get("GA_TRACKING_ID", None)

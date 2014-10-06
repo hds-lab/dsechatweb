@@ -38,7 +38,9 @@ XMPP_MUC_SERVER=conference.xmpp.example.com
 # Optional comma-separated list of hosts
 # ALLOWED_HOSTS=localhost
 
+# Enable google analytics
+#GA_TRACKING_ID=
+
 # Used for deployment to production
 # PRODUCTION_HOST=some.domain.here.com
 # PRODUCTION_USER=someusername
-
