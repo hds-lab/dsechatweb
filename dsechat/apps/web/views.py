@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 # Create your views here.
 
@@ -36,8 +38,12 @@ class ChatView(TemplateView):
         context = super(ChatView, self).get_context_data(**kwargs)
         context['xmpp_server'] = settings.XMPP_SERVER
         context['xmpp_bosh_url'] = settings.XMPP_BOSH_URL
+        context['session_cookie_name'] = settings.SESSION_COOKIE_NAME
         return context
 
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(ChatView, self).dispatch(*args, **kwargs)
 
 class ConsentInfoView(TemplateView):
     template_name = 'web/consent_page.html'

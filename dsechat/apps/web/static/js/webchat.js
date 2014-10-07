@@ -31,8 +31,8 @@ $(document).ready(function () {
 
 //    CandyShop.Refocus.init();
 
-    if (conf.username) {
-        Candy.Core.connect(conf.username);
+    if (conf.user) {
+        Candy.Core.connect(conf.user.username);
     } else {
         Candy.Core.connect();
     }

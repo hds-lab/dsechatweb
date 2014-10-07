@@ -88,7 +88,9 @@ class UserConsentView(generic.UpdateView):
 
     def get(self, request, *args, **kwargs):
         # you can't use this form if you've already consented
-        if self.request.user and self.request.user.is_authenticated and self.request.user.gives_consent:
+        if self.request.user and \
+                self.request.user.is_authenticated() and \
+                self.request.user.gives_consent:
             return redirect('web:consent_info')
         return super(UserConsentView, self).get(request, *args, **kwargs)
 

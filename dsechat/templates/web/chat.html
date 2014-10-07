@@ -30,6 +30,7 @@
         <script type="text/javascript" src="{% static 'vendor/bower/candy-plugins/typingnotifications/typingnotifications.js' %}"></script>
         <script type="text/javascript" src="{% static 'candy-plugins/auto_domain/candy.js' %}"></script>
         <script type="text/javascript" src="{% static 'candy-plugins/bootstrapify/candy.js' %}"></script>
+        <script type="text/javascript" src="{% static 'vendor/bower/jquery-cookie/jquery.cookie.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/webchat.js' %}"></script>
     {% endcompress %}
 
@@ -37,10 +38,14 @@
         window.webchat = {
             assets: '{% static "vendor/bower/candy/res/" %}',
         {% if user.is_authenticated %}
-            username: '{{ user.username }}',
+            user: {
+                username: '{{ user.username }}',
+                nickname: '{{ user.first_name }} {{ user.last_name }}'.trim()
+            },
         {% endif %}
             xmpp_server: '{{ xmpp_server }}',
-            xmpp_bosh_url: '{{ xmpp_bosh_url }}'
+            xmpp_bosh_url: '{{ xmpp_bosh_url }}',
+            session_cookie_name: '{{ session_cookie_name }}'
         };
     </script>
 {% endblock %}

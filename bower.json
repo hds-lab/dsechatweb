@@ -8,6 +8,7 @@
     "candy": "~1.7.1",
     "candy-plugins": "git://github.com/candy-chat/candy-plugins.git",
     "wp8-ie10-fix": "https://gist.github.com/4617428.git",
-    "ie10-viewport-fix": "https://gist.github.com/b8f97527b694febee5f4.git"
+    "ie10-viewport-fix": "https://gist.github.com/b8f97527b694febee5f4.git",
+    "jquery-cookie": "~1.4.1"
   }
 }
